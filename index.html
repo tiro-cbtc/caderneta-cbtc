@@ -383,16 +383,17 @@ const PROVAS = [
  P("moza","CBTC","Moçambique Drill Avançado","Humanoide",3,7,7,"Coldre",["curta"],"hf","2 no peito e 1 na cabeça, saindo do coldre. Máximo de 15."),
  P("srb","CBTC","Saque Rápido Básico","Humanoide",5,7,30,"Coldre",["curta"],"hf","Sacar e fazer 5 disparos seguidos."),
  P("sra","CBTC","Saque Rápido Avançado","Humanoide",5,7,30,"Coldre",["curta"],"hf","5 saques: sacar, 1 disparo, coldrear e baixar as mãos. Repetir."),
- P("isa-357lr","ISA","357 Low Ready","B-27",3,7,7,"Pronto baixo",["curta"],"?","Engajar e disparar 3x."),
- P("isa-357fh","ISA","357 From Holster","B-27",3,7,7,"Coldre",["curta"],"?","Sacar e disparar 3x."),
- P("isa-ssh","ISA","Strong and Support Hand","B-27",8,7,null,"Coldre",["curta"],"?","4 com a mão forte, trocar de mão, 4 com a mão fraca."),
- P("isa-f10lr","ISA","Fast 10 Low Ready","B-27",10,7,null,"Pronto baixo",["curta"],"?","Engajar, disparar 5x, trocar carregador, disparar 5x."),
- P("isa-f10fh","ISA","Fast 10 From Holster","B-27",10,7,null,"Coldre",["curta"],"?","Sacar, disparar 5x, trocar carregador, disparar 5x."),
+ P("isa-357lr","ISA","357 Low Ready","B-27",3,7,5,"Pronto baixo",["curta"],"?","Engajar e disparar 3x."),
+ P("isa-357fh","ISA","357 From Holster","B-27",3,7,5,"Coldre",["curta"],"?","Sacar e disparar 3x."),
+ P("isa-ssh","ISA","Strong and Support Hand","B-27",8,7,60,"Coldre",["curta"],"?","4 com a mão forte, trocar de mão, 4 com a mão fraca."),
+ P("isa-f10lr","ISA","Fast 10 Low Ready","B-27",10,7,30,"Pronto baixo",["curta"],"?","Engajar, disparar 5x, trocar carregador, disparar 5x."),
+ P("isa-f10fh","ISA","Fast 10 From Holster","B-27",10,7,30,"Coldre",["curta"],"?","Sacar, disparar 5x, trocar carregador, disparar 5x."),
  P("isa-4x2lr","ISA","4x2 Low Ready","4x2",8,7,null,"Pronto baixo",["curta"],"?","Engajar e disparar 2x em cada quadrante."),
- P("isa-4x2fh","ISA","4x2 From Holster","4x2",8,7,null,"Coldre",["curta"],"?","Sacar e disparar 2x em cada quadrante."),
- P("isa-rflr","ISA","Ring of Fire Low Ready","Ring of Fire",8,7,null,"Pronto baixo",["curta"],"?","Engajar e disparar 2x em cada quadrante."),
- P("isa-rffh","ISA","Ring of Fire From Holster","Ring of Fire",8,7,null,"Coldre",["curta"],"?","Sacar e disparar 2x em cada quadrante.")
+ P("isa-4x2fh","ISA","4x2 From Holster","4x2",8,7,30,"Coldre",["curta"],"?","Sacar e disparar 2x em cada quadrante."),
+ P("isa-rflr","ISA","Ring of Fire Low Ready","Ring of Fire",8,7,20,"Pronto baixo",["curta"],"?","Engajar e disparar 2x em cada quadrante."),
+ P("isa-rffh","ISA","Ring of Fire From Holster","Ring of Fire",8,7,20,"Coldre",["curta"],"?","Sacar e disparar 2x em cada quadrante.")
 ];
+PROVAS.forEach(p=>{ p.un = p.fed==="ISA" ? "yd" : "m"; });
 const BYID = Object.fromEntries(PROVAS.map(p=>[p.id,p]));
 const ALVOS = {CBTC:["TRP","4 Cores","Humanoide"],ISA:["B-27","4x2","Ring of Fire"]};
 const ALVO_NOME = {"TRP":"Alvo TRP","4 Cores":"Alvo 4 cores","Humanoide":"Alvo humanoide","B-27":"Alvo B-27","4x2":"Alvo 4x2","Ring of Fire":"Alvo Ring of Fire"};
@@ -491,7 +492,7 @@ function renderEtapa(){
         <div class="prova-row">
           <input type="checkbox" class="check" aria-label="Feita: ${esc(p.nome)}" ${ok?"checked":""} ${temRes?"disabled title='Tem resultado lançado'":""} data-feita="${p.id}">
           <div style="min-width:0"><div class="prova-nome">${esc(p.nome)}</div>
-            <div class="meta"><span><b>${p.disp}</b> disp.</span><span><b>${p.dist}</b> m</span><span><b>${p.tempo?p.tempo+" s":"s/ limite"}</b></span><span>${esc(p.saida.split(/[.;,]/)[0])}</span></div>
+            <div class="meta"><span><b>${p.disp}</b> disp.</span><span><b>${p.dist}</b> ${p.un}</span><span><b>${p.tempo?p.tempo+" s":"s/ limite"}</b></span><span>${esc(p.saida.split(/[.;,]/)[0])}</span></div>
             ${temRes?`<div class="feito">${pass.length} passada${pass.length>1?"s":""} · melhor ${valorMelhor(b,p)}</div>`:""}
           </div>
           <button class="expand" aria-label="Detalhes de ${esc(p.nome)}" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg></button>
