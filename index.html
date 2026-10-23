@@ -344,7 +344,7 @@ details[open] summary{margin-bottom:8px}
       <div><b>iPhone</b>Abra o link no Safari, toque em Compartilhar e depois em <i>Adicionar à Tela de Início</i>.</div>
       <div><b>Android</b>Abra o link no Chrome, toque nos três pontos e depois em <i>Instalar app</i> ou <i>Adicionar à tela inicial</i>.</div>
     </div>
-    <p class="hint">Os resultados ficam salvos no seu aparelho e ninguém do grupo vê os seus números. Exporte de vez em quando: o arquivo exportado também serve de cópia de segurança. As regras resumidas aqui seguem os cards do app da CBTC e os vídeos oficiais; em caso de dúvida, vale o app.</p>
+    <p class="hint">Os resultados ficam salvos no seu aparelho e ninguém do grupo vê os seus números. Exporte de vez em quando: o arquivo exportado também serve de cópia de segurança. As regras resumidas aqui seguem o guia rápido oficial da CBTC (19/10/2026), os cards do app e os vídeos oficiais; em caso de dúvida, vale o app.</p>
     <button class="btn block" id="ajuda-ok">Entendi</button>
   </div>
 </div>
@@ -362,27 +362,27 @@ details[open] summary{margin-bottom:8px}
 /* ---------- Dados das provas (cards de 01/09 e 01/10/2026 + vídeos de regras) ---------- */
 const P = (id,fed,nome,alvo,disp,dist,tempo,saida,armas,rank,exec)=>({id,fed,nome,alvo,disp,dist,tempo,saida,armas,rank,exec});
 const PROVAS = [
- P("mq-qa","CBTC","Municiamento Quântico Qualquer Arma","TRP",1,10,100,"Bancada: arma aberta, carregador vazio e 1 munição",["curta","longa"],"hf","Municiar o carregador, alimentar a arma e disparar. Lever action: munição pela janela lateral ou pela câmara."),
- P("mq-cac","CBTC","Municiamento Quântico CAC","TRP",1,10,null,"Bancada: arma vazia",["12"],"?","Pegar a munição (balote), municiar, fechar a arma e disparar. Tempo indeterminado."),
- P("rec","CBTC","Recarga de Emergência","TRP",2,5,100,"Curta no coldre; longa pronta, carregador extra no bolso ou porta-carregador",["curta","longa"],"?","1 munição em cada carregador: disparar, trocar com a arma aberta e disparar. Lever action: recarga pela janela ou câmara."),
+ P("mq-qa","CBTC","Municiamento Quântico Qualquer Arma","TRP",1,10,100,"Bancada: arma aberta, carregador vazio e 1 munição",["curta","longa","12"],"hf","Municiar o carregador, alimentar a arma e disparar. Lever action: munição pela janela lateral ou pela câmara."),
+ P("mq-cac","CBTC","Municiamento Quântico CAC","TRP",1,10,null,"Bancada: arma vazia",["12"],"hf","Pegar a munição (balote), municiar, fechar a arma e disparar. Tempo indeterminado."),
+ P("rec","CBTC","Recarga de Emergência","TRP",2,5,100,"Curta no coldre; longa pronta, carregador extra no bolso ou porta-carregador",["curta","longa"],"hf","1 munição em cada carregador: disparar, trocar com a arma aberta e disparar. Lever action: recarga pela janela ou câmara."),
  P("rec12","CBTC","Recarga de Emergência Cal. 12","TRP",2,7,30,"Arma vazia na bancada, em pronto baixo ou linha de cintura",["12"],"hf","Municiar e disparar no alvo 1; abrir, remuniciar e disparar no alvo 2."),
  P("357b","CBTC","357 Básico","TRP",3,7,5,"Pronto baixo",["curta"],"hf","3 disparos."),
- P("357a","CBTC","357 Avançado","TRP",5,7,3,"Coldre",["curta"],"hf?","Sacar e fazer 5 disparos. Cada disparo depois dos 3 s vale −10."),
+ P("357a","CBTC","357 Avançado","TRP",5,7,3,"Coldre",["curta"],"hf","Sacar e fazer 5 disparos. Cada disparo depois dos 3 s vale −10."),
  P("tamp","CBTC","Prova da Tampinha","TRP",5,7,60,"Pronto baixo",["curta","longa"],"pontos","5 disparos. Só contam os do centro branco (10 cada)."),
- P("rclub","CBTC","Copa Recarga Club","TRP",6,7,30,"Arma vazia e fechada. Curta: coldre ou bancada. Longa: bancada ou cintura (pronto baixo não vale)",["curta","longa"],"?","3 carregadores com 2: inserir, manobrar, 2 disparos; trocar, 2; trocar, 2. Cada alvo recebe 3."),
+ P("rclub","CBTC","Copa Recarga Club","TRP",6,7,100,"Bancada, coldre ou velado. Arma vazia e fechada",["curta"],"hf","3 carregadores com 2: inserir, manobrar, 2 disparos; trocar, 2; trocar, 2. Cada alvo recebe 3."),
  P("proarmas","CBTC","Copa ProArmas","TRP",8,5,10,"Coldre",["curta"],"hf","4 disparos no alvo 1, troca de carregador, 4 no alvo 2."),
  P("minip","CBTC","Mini President","TRP",8,7,30,"Curta no coldre; longa em pronto baixo, travada",["curta","longa"],"hf","2 no A, 2 no B, recarga de emergência, 2 no B, 2 no A."),
- P("revint","CBTC","Copa Revint","TRP",10,5,15,"Coldre",["curta"],"hf","2 num alvo e 3 no outro, troca de carregador, de novo 2 e 3. Cada alvo termina com 5."),
+ P("revint","CBTC","Copa Revint","TRP",10,5,15,"Coldre",["curta"],"hf","2 num alvo, 3 no outro; troca de carregador; 2 no mesmo alvo onde parou, 3 no primeiro. Cada alvo termina com 5. A ordem dos alvos não altera a prova."),
  P("turco","CBTC","Prova do Turco","4 Cores",8,10,60,"Mão forte em pronto baixo, mão fraca no bolso",["curta"],"pontos","2 disparos em cada cor, só com a mão forte. Máximo de 40 pontos."),
- P("norisk","CBTC","Copa No Risk","4 Cores",10,7,20,"Bancada, coldre ou pronto baixo",["curta"],"?","4 no vermelho, 1 no amarelo, troca obrigatória, 3 no azul, 2 no verde."),
- P("amigos","CBTC","Competição entre Amigos","4 Cores",20,10,90,"Curta: pronto baixo ou coldre. Longa: cintura ou 90°",["curta","longa"],"pontos?","5 disparos em cada cor, na ordem que quiser, com ou sem recarga."),
+ P("norisk","CBTC","Copa No Risk","4 Cores",10,7,20,"Bancada, coldre ou pronto baixo",["curta"],"pontos","4 no vermelho, 1 no amarelo, troca obrigatória, 3 no azul, 2 no verde."),
+ P("amigos","CBTC","Competição entre Amigos","4 Cores",20,10,90,"Pronto baixo",["curta","longa"],"pontos","5 disparos em cada cor, na ordem que quiser, com ou sem recarga."),
  P("voeste","CBTC","Velho Oeste","Humanoide",1,5,15,"Revólver no coldre ou bancada; lever action com 1 no tubo, câmara vazia",["curta","longa"],"hf","Só revólver ou lever action. Revólver: sacar e disparar. Lever: levar à visada, manobrar e disparar."),
- P("guns","CBTC","Copa Guns N'Shot","Humanoide",2,7,20,"Coldre velado, jaqueta fechada, mãos ao longo do corpo",["curta"],"?","Sacar, 1 disparo, recarga tática (o carregador não pode cair), 1 disparo."),
+ P("guns","CBTC","Copa Guns N'Shot","Humanoide",2,7,100,"Coldre velado, jaqueta fechada, mãos ao longo do corpo",["curta"],"hf","Sacar, 1 disparo, recarga tática (o carregador não pode cair), 1 disparo."),
  P("543","CBTC","5, 4, 3","Humanoide",3,7,60,"Pronto baixo",["curta","longa"],"pontos","1 disparo no 5, 1 no 4 e 1 no 3. Só conta um por zona. Máximo de 12."),
- P("mozb","CBTC","Moçambique Drill Básico","Humanoide",3,7,7,"Pronto baixo",["curta","longa"],"?","2 no peito e 1 na cabeça. Na cabeça só valem as zonas do 5 ao 3. Alma lisa desclassifica."),
- P("moza","CBTC","Moçambique Drill Avançado","Humanoide",3,7,7,"Coldre",["curta"],"?","2 no peito e 1 na cabeça, saindo do coldre. Máximo de 15."),
+ P("mozb","CBTC","Moçambique Drill Básico","Humanoide",3,7,7,"Pronto baixo",["curta","longa"],"hf","2 no peito e 1 na cabeça. Na cabeça só valem as zonas do 5 ao 3. Alma lisa desclassifica."),
+ P("moza","CBTC","Moçambique Drill Avançado","Humanoide",3,7,7,"Coldre",["curta"],"hf","2 no peito e 1 na cabeça, saindo do coldre. Máximo de 15."),
  P("srb","CBTC","Saque Rápido Básico","Humanoide",5,7,30,"Coldre",["curta"],"hf","Sacar e fazer 5 disparos seguidos."),
- P("sra","CBTC","Saque Rápido Avançado","Humanoide",5,7,30,"Coldre",["curta"],"?","5 saques: sacar, 1 disparo, coldrear e baixar as mãos. Repetir."),
+ P("sra","CBTC","Saque Rápido Avançado","Humanoide",5,7,30,"Coldre",["curta"],"hf","5 saques: sacar, 1 disparo, coldrear e baixar as mãos. Repetir."),
  P("isa-357lr","ISA","357 Low Ready","B-27",3,7,7,"Pronto baixo",["curta"],"?","Engajar e disparar 3x."),
  P("isa-357fh","ISA","357 From Holster","B-27",3,7,7,"Coldre",["curta"],"?","Sacar e disparar 3x."),
  P("isa-ssh","ISA","Strong and Support Hand","B-27",8,7,null,"Coldre",["curta"],"?","4 com a mão forte, trocar de mão, 4 com a mão fraca."),
