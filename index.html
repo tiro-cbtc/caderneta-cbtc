@@ -1,0 +1,798 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Caderneta CBTC</title>
+<meta name="description" content="Provas da CBTC por tipo de alvo, lançamento de resultados, checklist de material e exportação para planilha.">
+<meta name="theme-color" content="#1b2a6b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Caderneta">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>*,*::before,*::after{box-sizing:border-box}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<style>
+/* Layout: app de uma coluna, cabeçalho fixo com a etapa, barra de abas no rodapé, cartões só onde há ação */
+:root{
+  --bg:#f3f4f1; --surface:#ffffff; --ink:#14212e; --muted:#5b6670; --line:#d9ddd6;
+  --green:#0f7a3d; --green-soft:#e1f1e6; --navy:#1b2a6b; --brass:#b9851c; --brass-soft:#f6ecd4;
+  --danger:#b3261e; --danger-soft:#f9e1df;
+  --f-display:"Saira Condensed","Arial Narrow",Arial,sans-serif;
+  --f-body:"IBM Plex Sans",-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e141b; --surface:#16202a; --ink:#e8ece9; --muted:#9aa6ae; --line:#26323d;
+  --green:#3fb871; --green-soft:#16342a; --navy:#8fa2f0; --brass:#e0b04f; --brass-soft:#3a2f17;
+  --danger:#ff8a80; --danger-soft:#3d1d1b; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0e141b; --surface:#16202a; --ink:#e8ece9; --muted:#9aa6ae; --line:#26323d;
+  --green:#3fb871; --green-soft:#16342a; --navy:#8fa2f0; --brass:#e0b04f; --brass-soft:#3a2f17;
+  --danger:#ff8a80; --danger-soft:#3d1d1b; color-scheme:dark}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.45;-webkit-text-size-adjust:100%}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--navy)}
+*{box-sizing:border-box}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+.wrap{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));max-width:720px;margin:0 auto}
+
+/* Cabeçalho */
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--navy);color:#fff}
+:root:not([data-theme="light"]) header.top{background:var(--navy)}
+.top .wrap{display:flex;align-items:center;gap:12px;padding-block:10px}
+.brand{font-family:var(--f-display);font-weight:800;font-size:22px;letter-spacing:.02em;line-height:1;text-transform:uppercase;flex:1;min-width:0}
+.brand small{display:block;font-family:var(--f-body);font-weight:500;font-size:11px;letter-spacing:.08em;opacity:.8;margin-top:3px;text-transform:uppercase}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) header.top{background:#1a2550}}
+:root[data-theme="dark"] header.top{background:#1a2550}
+.etapa{display:flex;flex-direction:column;align-items:flex-end;gap:2px}
+.etapa label{font-size:10px;letter-spacing:.1em;text-transform:uppercase;opacity:.8}
+.etapa input{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);border-radius:8px;color:#fff;padding:4px 8px;font-family:var(--f-mono);font-size:14px;color-scheme:dark;max-width:150px}
+.iconbtn{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:50%;width:34px;height:34px;display:grid;place-items:center;font-weight:700;flex:none}
+.sync{font-size:11px;color:var(--muted);padding-block:6px 0;display:flex;gap:6px;align-items:center}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--muted);flex:none}
+.dot.ok{background:var(--green)}
+
+main{padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+section.view{display:flex;flex-direction:column;gap:14px;padding-block:12px 8px}
+h2{font-family:var(--f-display);font-weight:700;font-size:24px;line-height:1.1;margin:0;text-wrap:balance;letter-spacing:.01em}
+h3{font-family:var(--f-display);font-weight:700;font-size:18px;margin:0;letter-spacing:.02em;text-transform:uppercase}
+p{margin:0}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+
+/* Barra de abas */
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+nav.tabs .wrap{display:grid;grid-template-columns:repeat(5,1fr);gap:2px;padding-block:6px}
+nav.tabs button{background:none;border:0;border-radius:8px;padding:6px 2px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11.5px;color:var(--muted);font-weight:500}
+nav.tabs button svg{width:22px;height:22px}
+nav.tabs button[aria-current="page"]{color:var(--green);background:var(--green-soft)}
+
+/* Painel de progresso */
+.progress{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:center}
+.progress .big{font-family:var(--f-display);font-size:34px;font-weight:800;line-height:1}
+.bar{grid-column:1/-1;height:8px;border-radius:4px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--green);border-radius:4px;transition:width .3s}
+
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-size:13.5px;font-weight:500}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+/* Grupos por alvo */
+.grupo{display:flex;flex-direction:column;gap:0}
+.grupo-h{display:flex;align-items:baseline;gap:8px;padding:6px 2px}
+.grupo-h .fed{font-size:11px;font-weight:600;letter-spacing:.08em;border-radius:4px;padding:1px 6px;background:var(--green);color:#fff}
+.grupo-h .fed.isa{background:var(--brass)}
+.lista{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.prova{border-top:1px solid var(--line)}
+.prova:first-child{border-top:0}
+.prova-row{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:10px 12px}
+.check{appearance:none;-webkit-appearance:none;width:26px;height:26px;border:2px solid var(--line);border-radius:7px;background:var(--bg);display:grid;place-items:center;margin:0;flex:none}
+.check:checked{background:var(--green);border-color:var(--green)}
+.check:checked::after{content:"";width:7px;height:13px;border:solid #fff;border-width:0 3px 3px 0;transform:translateY(-1px) rotate(45deg)}
+.prova-nome{font-weight:600;line-height:1.25}
+.meta{display:flex;flex-wrap:wrap;gap:4px 10px;font-size:12.5px;color:var(--muted);margin-top:2px}
+.meta b{font-family:var(--f-mono);font-weight:600;color:var(--ink)}
+.expand{background:none;border:0;width:34px;height:34px;border-radius:8px;color:var(--muted);display:grid;place-items:center}
+.expand svg{transition:transform .2s}
+.prova.open .expand svg{transform:rotate(180deg)}
+.det{display:none;padding:0 12px 12px 48px;font-size:14px;gap:8px;flex-direction:column}
+.prova.open .det{display:flex}
+.det dl{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;margin:0}
+.det dt{color:var(--muted);font-size:12.5px}
+.det dd{margin:0}
+.badge{display:inline-block;font-size:11.5px;font-weight:600;padding:1px 7px;border-radius:999px;background:var(--brass-soft);color:var(--ink);white-space:nowrap}
+.badge.hf{background:var(--green-soft)}
+.feito{font-size:12px;color:var(--green);font-weight:600}
+
+/* Formulários */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px;display:flex;flex-direction:column;gap:12px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.field{display:flex;flex-direction:column;gap:4px;min-width:0}
+.field label{font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.field input,.field select,.field textarea{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px;font-size:16px;width:100%;min-width:0}
+.field textarea{min-height:64px;resize:vertical}
+.big-in{font-family:var(--f-mono);font-size:20px!important;font-weight:600}
+.seg{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{border:0;background:var(--bg);padding:10px;font-weight:500}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.hfbox{display:flex;justify-content:space-between;align-items:center;background:var(--green-soft);border-radius:8px;padding:10px 12px}
+.hfbox .num{font-size:24px;font-weight:600}
+.btn{border:0;border-radius:10px;padding:12px 16px;font-weight:600;font-size:15px;background:var(--green);color:#fff;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn.sec{background:var(--surface);color:var(--ink);border:1px solid var(--line)}
+.btn.warn{background:var(--danger-soft);color:var(--danger)}
+.btn.block{width:100%}
+.btn:disabled{opacity:.5}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.row>.btn{flex:1 1 140px}
+.hint{font-size:13px;color:var(--muted)}
+
+/* Histórico */
+.best{display:grid;grid-template-columns:1fr auto auto;gap:4px 10px;align-items:center;padding:10px 12px;border-top:1px solid var(--line)}
+.best:first-child{border-top:0}
+.delta{font-family:var(--f-mono);font-size:12.5px;font-weight:600}
+.delta.up{color:var(--green)}.delta.down{color:var(--danger)}
+.passada{display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:10px 12px;border-top:1px solid var(--line)}
+.passada:first-child{border-top:0}
+.passada .acts{grid-column:1/-1;display:flex;gap:8px;margin-top:6px}
+.passada .acts button{background:none;border:1px solid var(--line);border-radius:8px;padding:4px 10px;font-size:13px}
+.empty{text-align:center;padding:24px 16px;color:var(--muted);display:flex;flex-direction:column;gap:10px;align-items:center}
+
+/* Material */
+.mat{display:flex;align-items:center;gap:12px;padding:10px 12px;border-top:1px solid var(--line)}
+.mat:first-child{border-top:0}
+.mat span{flex:1}
+.mat .del{background:none;border:0;color:var(--muted);font-size:18px;width:30px}
+
+pre.code{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px;font-family:var(--f-mono);font-size:12px;overflow-x:auto;max-height:240px;margin:0;white-space:pre}
+details summary{cursor:pointer;font-weight:600}
+details[open] summary{margin-bottom:8px}
+.status{font-size:13px;padding:8px 10px;border-radius:8px;background:var(--brass-soft)}
+
+/* Toast e diálogo */
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(92px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-weight:500;z-index:40;max-width:calc(100% - 32px);box-shadow:0 6px 20px rgba(0,0,0,.25)}
+.sheet{position:fixed;inset:0;z-index:50;background:rgba(10,15,20,.55);display:flex;align-items:flex-end;justify-content:center;padding:0}
+.sheet-in{background:var(--surface);width:100%;max-width:720px;max-height:88%;overflow:auto;border-radius:16px 16px 0 0;padding:18px max(16px,env(safe-area-inset-right,0px)) calc(18px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:12px}
+.steps{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:8px}
+.os{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.os div{background:var(--bg);border-radius:8px;padding:10px;font-size:13.5px}
+.os b{display:block;margin-bottom:4px}
+@media (max-width:380px){.grid3{grid-template-columns:1fr 1fr}.os{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="brand">Caderneta CBTC<small id="sub-perfil">Provas e resultados</small></div>
+    <div class="etapa"><label for="etapa">Etapa</label><input type="month" id="etapa"></div>
+    <button class="iconbtn" id="btn-ajuda" aria-label="Como usar">?</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="sync" id="sync"><span class="dot" id="sync-dot"></span><span id="sync-txt">Salvo neste aparelho</span></div>
+
+  <!-- ETAPA -->
+  <section class="view" id="v-etapa">
+    <div class="progress">
+      <div><div class="small muted" id="prog-label">Provas feitas na etapa</div><div class="big num" id="prog-num">0/21</div></div>
+      <div class="small muted" style="text-align:right" id="prog-disp"></div>
+      <div class="bar"><i id="prog-bar" style="width:0"></i></div>
+    </div>
+    <div class="chips" role="group" aria-label="Federação">
+      <button class="chip" data-fed="CBTC" aria-pressed="true">CBTC</button>
+      <button class="chip" data-fed="ISA" aria-pressed="false">ISA</button>
+    </div>
+    <div class="chips" role="group" aria-label="Arma">
+      <button class="chip" data-arma="todas" aria-pressed="true">Todas</button>
+      <button class="chip" data-arma="curta" aria-pressed="false">Curta</button>
+      <button class="chip" data-arma="longa" aria-pressed="false">Longa</button>
+      <button class="chip" data-arma="12" aria-pressed="false">Cal. 12</button>
+    </div>
+    <div id="grupos" style="display:flex;flex-direction:column;gap:14px"></div>
+    <p class="hint">A caixa fica marcada quando há resultado lançado na etapa. Você também pode marcar à mão o que já fez. Toque na seta para ver a execução da prova.</p>
+  </section>
+
+  <!-- LANÇAR -->
+  <section class="view" id="v-lancar" hidden>
+    <h2 id="form-titulo">Lançar passada</h2>
+    <form class="card" id="form" novalidate>
+      <div class="field"><label for="f-prova">Prova</label><select id="f-prova" required></select></div>
+      <div class="grid2">
+        <div class="field"><label for="f-data">Data</label><input type="date" id="f-data" required></div>
+        <div class="field"><label for="f-cat">Categoria</label>
+          <select id="f-cat">
+            <option>Curta restrita</option><option>Curta permitida</option>
+            <option>Longa raiada restrita</option><option>Longa raiada permitida</option>
+            <option>Cal. 12</option>
+          </select></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label for="f-arma">Arma</label><input id="f-arma" list="dl-armas" placeholder="Ex.: Jericho 941F" autocomplete="off"></div>
+        <div class="field"><label for="f-cal">Calibre</label><input id="f-cal" list="dl-cal" placeholder="Ex.: 9x19" autocomplete="off"></div>
+      </div>
+      <datalist id="dl-armas"></datalist>
+      <datalist id="dl-cal"><option value="9x19"><option value=".357 Magnum"><option value=".38 SPL"><option value=".380 ACP"><option value=".40 S&W"><option value=".45 ACP"><option value=".22 LR"><option value="12 GA"></datalist>
+      <div class="field"><label>Munição</label>
+        <div class="seg" id="f-mun"><button type="button" data-v="Fábrica" aria-pressed="true">Fábrica</button><button type="button" data-v="Recarga" aria-pressed="false">Recarga</button></div>
+      </div>
+      <div class="field" id="wrap-carga" hidden><label for="f-carga">Carga (opcional)</label><input id="f-carga" placeholder="Ex.: 4,2 gr N320 · ogiva 124 gr"></div>
+      <div class="grid2">
+        <div class="field"><label for="f-pontos">Pontos</label><input id="f-pontos" class="big-in" inputmode="decimal" placeholder="0"></div>
+        <div class="field"><label for="f-tempo">Tempo (s)</label><input id="f-tempo" class="big-in" inputmode="decimal" placeholder="0,00"></div>
+      </div>
+      <div class="grid3">
+        <div class="field"><label for="f-disp">Disparos</label><input id="f-disp" class="num" inputmode="numeric"></div>
+        <div class="field"><label for="f-x">X</label><input id="f-x" class="num" inputmode="numeric" placeholder="0"></div>
+        <div class="field"><label for="f-miss">Miss</label><input id="f-miss" class="num" inputmode="numeric" placeholder="0"></div>
+      </div>
+      <div class="hfbox"><div><div class="small" style="font-weight:600">Hit factor</div><div class="small muted" id="hf-nota">pontos ÷ tempo</div></div><div class="num" id="hf-val">–</div></div>
+      <div class="field"><label for="f-obs">Observações</label><textarea id="f-obs" placeholder="Ex.: pane no 3º disparo, vento forte"></textarea></div>
+      <div class="row"><button class="btn" type="submit" id="btn-salvar">Salvar passada</button><button class="btn sec" type="button" id="btn-cancelar" hidden>Cancelar edição</button></div>
+    </form>
+  </section>
+
+  <!-- HISTÓRICO -->
+  <section class="view" id="v-hist" hidden>
+    <h2>Resultados da etapa</h2>
+    <p class="hint" id="hist-sub">Melhor resultado por prova e comparação com a etapa anterior.</p>
+    <div class="lista" id="melhores"></div>
+    <h3>Todas as passadas da etapa</h3>
+    <div class="lista" id="passadas"></div>
+  </section>
+
+  <!-- MATERIAL -->
+  <section class="view" id="v-mat" hidden>
+    <h2>O que levar</h2>
+    <p class="hint">A lista é sua e fica marcada por etapa. Acrescente o que faltar.</p>
+    <div class="lista" id="mat-lista"></div>
+    <form class="row" id="mat-form"><div class="field" style="flex:1 1 180px"><label for="mat-novo">Novo item</label><input id="mat-novo" placeholder="Ex.: grampeador de alvo"></div><button class="btn sec" type="submit" style="align-self:flex-end">Adicionar</button></form>
+    <button class="btn sec" id="mat-limpar">Desmarcar tudo</button>
+  </section>
+
+  <!-- EXPORTAR -->
+  <section class="view" id="v-exp" hidden>
+    <h2>Exportar resultados</h2>
+    <div class="card">
+      <div class="field"><label>Forma de envio para a planilha</label>
+        <div class="seg" id="exp-modo"><button type="button" data-v="manual" aria-pressed="true">Manual</button><button type="button" data-v="auto" aria-pressed="false">Automático</button></div>
+      </div>
+      <p class="hint" id="exp-modo-txt"></p>
+    </div>
+
+    <div class="card" id="box-manual">
+      <h3>Exportar agora</h3>
+      <div class="field"><label for="exp-periodo">O que exportar</label>
+        <select id="exp-periodo"><option value="novas">Só o que ainda não foi exportado</option><option value="etapa">Etapa selecionada</option><option value="todas">Tudo</option></select></div>
+      <label class="small" style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="exp-cab"> Incluir linha de cabeçalho</label>
+      <p class="status" id="exp-cont"></p>
+      <button class="btn block" id="exp-copiar">Copiar para colar na planilha</button>
+      <div class="row"><button class="btn sec" id="exp-csv">Baixar CSV</button><button class="btn sec" id="exp-xlsx">Baixar Excel</button></div>
+      <p class="hint">Na planilha, clique na primeira linha vazia da aba Histórico, coluna A, e cole. Cada valor cai na sua coluna.</p>
+    </div>
+
+    <div class="card" id="box-auto" hidden>
+      <h3>Envio automático</h3>
+      <div class="field"><label for="auto-url">Endereço do script da sua planilha</label><input id="auto-url" placeholder="https://script.google.com/macros/s/…/exec" inputmode="url" autocomplete="off"></div>
+      <p class="status" id="auto-status"></p>
+      <div class="row"><button class="btn" id="auto-enviar">Enviar pendentes</button><button class="btn sec" id="auto-testar">Testar</button></div>
+      <details><summary>Como ligar a sua planilha (uma vez só)</summary>
+        <ol class="steps small">
+          <li>Envie a planilha modelo para o seu Google Drive e abra com o Google Planilhas.</li>
+          <li>Menu <b>Extensões → Apps Script</b>. Apague o que estiver lá e cole o código abaixo.</li>
+          <li><b>Implantar → Nova implantação → App da Web</b>. Executar como: <b>eu</b>. Quem pode acessar: <b>qualquer pessoa</b>. Autorize.</li>
+          <li>Copie o endereço que termina em <b>/exec</b> e cole no campo acima.</li>
+          <li>Toque em <b>Testar</b>. Se aparecer uma linha de teste na planilha, está ligado. Apague a linha de teste.</li>
+        </ol>
+        <pre class="code" id="gs-code"></pre>
+        <button class="btn sec block" id="gs-copiar" style="margin-top:8px">Copiar código do script</button>
+      </details>
+    </div>
+
+    <div class="card">
+      <h3>Seus dados</h3>
+      <div class="grid2">
+        <div class="field"><label for="p-nome">Nome do atirador</label><input id="p-nome" autocomplete="name"></div>
+        <div class="field"><label for="p-clube">Clube</label><input id="p-clube"></div>
+      </div>
+      <p class="hint">O nome entra no arquivo exportado e no envio automático.</p>
+    </div>
+
+    <div class="card">
+      <h3>Cópia de segurança</h3>
+      <p class="hint">Trocou de celular? Importe aqui um CSV exportado por este app. Passadas repetidas não duplicam.</p>
+      <label class="btn sec block" for="imp-file">Importar CSV</label>
+      <input type="file" id="imp-file" accept=".csv,text/csv" hidden>
+    </div>
+  </section>
+</main>
+
+<nav class="tabs" aria-label="Seções">
+  <div class="wrap">
+    <button data-view="etapa" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>Etapa</button>
+    <button data-view="lancar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Lançar</button>
+    <button data-view="hist"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>Resultados</button>
+    <button data-view="mat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6h11M9 12h11M9 18h11"/><path d="m3 6 1.5 1.5L7 5M3 12l1.5 1.5L7 11M3 18l1.5 1.5L7 17"/></svg>Material</button>
+    <button data-view="exp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>Exportar</button>
+  </div>
+</nav>
+
+<div class="sheet" id="ajuda" hidden role="dialog" aria-modal="true" aria-labelledby="ajuda-t">
+  <div class="sheet-in">
+    <h2 id="ajuda-t">Como usar a Caderneta</h2>
+    <ol class="steps">
+      <li><b>Etapa:</b> escolha o mês no alto. As provas aparecem por tipo de alvo, da que tem menos disparos para a que tem mais. Filtre por arma para ver só o que você pode fazer.</li>
+      <li><b>Lançar:</b> depois de cada passada, registre pontos, tempo, disparos, X e miss, os mesmos números que vão para o app da CBTC. O hit factor sai sozinho.</li>
+      <li><b>Resultados:</b> veja o melhor de cada prova na etapa e se melhorou em relação ao mês anterior.</li>
+      <li><b>Material:</b> confira a lista antes de sair de casa.</li>
+      <li><b>Exportar:</b> copie as passadas novas e cole na sua planilha, ou ligue o envio automático para o Google Planilhas.</li>
+    </ol>
+    <h3>Instalar no celular</h3>
+    <div class="os">
+      <div><b>iPhone</b>Abra o link no Safari, toque em Compartilhar e depois em <i>Adicionar à Tela de Início</i>.</div>
+      <div><b>Android</b>Abra o link no Chrome, toque nos três pontos e depois em <i>Instalar app</i> ou <i>Adicionar à tela inicial</i>.</div>
+    </div>
+    <p class="hint">Os resultados ficam salvos no seu aparelho e ninguém do grupo vê os seus números. Exporte de vez em quando: o arquivo exportado também serve de cópia de segurança. As regras resumidas aqui seguem os cards do app da CBTC e os vídeos oficiais; em caso de dúvida, vale o app.</p>
+    <button class="btn block" id="ajuda-ok">Entendi</button>
+  </div>
+</div>
+
+<div class="sheet" id="confirm" hidden role="dialog" aria-modal="true">
+  <div class="sheet-in"><p id="confirm-txt"></p><div class="row"><button class="btn warn" id="confirm-sim">Apagar</button><button class="btn sec" id="confirm-nao">Manter</button></div></div>
+</div>
+
+<div class="toast" id="toast" hidden></div>
+
+<script src="vendor/xlsx.full.min.js"></script>
+<script>
+(function(){
+"use strict";
+/* ---------- Dados das provas (cards de 01/09 e 01/10/2026 + vídeos de regras) ---------- */
+const P = (id,fed,nome,alvo,disp,dist,tempo,saida,armas,rank,exec)=>({id,fed,nome,alvo,disp,dist,tempo,saida,armas,rank,exec});
+const PROVAS = [
+ P("mq-qa","CBTC","Municiamento Quântico Qualquer Arma","TRP",1,10,100,"Bancada: arma aberta, carregador vazio e 1 munição",["curta","longa"],"hf","Municiar o carregador, alimentar a arma e disparar. Lever action: munição pela janela lateral ou pela câmara."),
+ P("mq-cac","CBTC","Municiamento Quântico CAC","TRP",1,10,null,"Bancada: arma vazia",["12"],"?","Pegar a munição (balote), municiar, fechar a arma e disparar. Tempo indeterminado."),
+ P("rec","CBTC","Recarga de Emergência","TRP",2,5,100,"Curta no coldre; longa pronta, carregador extra no bolso ou porta-carregador",["curta","longa"],"?","1 munição em cada carregador: disparar, trocar com a arma aberta e disparar. Lever action: recarga pela janela ou câmara."),
+ P("rec12","CBTC","Recarga de Emergência Cal. 12","TRP",2,7,30,"Arma vazia na bancada, em pronto baixo ou linha de cintura",["12"],"hf","Municiar e disparar no alvo 1; abrir, remuniciar e disparar no alvo 2."),
+ P("357b","CBTC","357 Básico","TRP",3,7,5,"Pronto baixo",["curta"],"hf","3 disparos."),
+ P("357a","CBTC","357 Avançado","TRP",5,7,3,"Coldre",["curta"],"hf?","Sacar e fazer 5 disparos. Cada disparo depois dos 3 s vale −10."),
+ P("tamp","CBTC","Prova da Tampinha","TRP",5,7,60,"Pronto baixo",["curta","longa"],"pontos","5 disparos. Só contam os do centro branco (10 cada)."),
+ P("rclub","CBTC","Copa Recarga Club","TRP",6,7,30,"Arma vazia e fechada. Curta: coldre ou bancada. Longa: bancada ou cintura (pronto baixo não vale)",["curta","longa"],"?","3 carregadores com 2: inserir, manobrar, 2 disparos; trocar, 2; trocar, 2. Cada alvo recebe 3."),
+ P("proarmas","CBTC","Copa ProArmas","TRP",8,5,10,"Coldre",["curta"],"hf","4 disparos no alvo 1, troca de carregador, 4 no alvo 2."),
+ P("minip","CBTC","Mini President","TRP",8,7,30,"Curta no coldre; longa em pronto baixo, travada",["curta","longa"],"hf","2 no A, 2 no B, recarga de emergência, 2 no B, 2 no A."),
+ P("revint","CBTC","Copa Revint","TRP",10,5,15,"Coldre",["curta"],"hf","2 num alvo e 3 no outro, troca de carregador, de novo 2 e 3. Cada alvo termina com 5."),
+ P("turco","CBTC","Prova do Turco","4 Cores",8,10,60,"Mão forte em pronto baixo, mão fraca no bolso",["curta"],"pontos","2 disparos em cada cor, só com a mão forte. Máximo de 40 pontos."),
+ P("norisk","CBTC","Copa No Risk","4 Cores",10,7,20,"Bancada, coldre ou pronto baixo",["curta"],"?","4 no vermelho, 1 no amarelo, troca obrigatória, 3 no azul, 2 no verde."),
+ P("amigos","CBTC","Competição entre Amigos","4 Cores",20,10,90,"Curta: pronto baixo ou coldre. Longa: cintura ou 90°",["curta","longa"],"pontos?","5 disparos em cada cor, na ordem que quiser, com ou sem recarga."),
+ P("voeste","CBTC","Velho Oeste","Humanoide",1,5,15,"Revólver no coldre ou bancada; lever action com 1 no tubo, câmara vazia",["curta","longa"],"hf","Só revólver ou lever action. Revólver: sacar e disparar. Lever: levar à visada, manobrar e disparar."),
+ P("guns","CBTC","Copa Guns N'Shot","Humanoide",2,7,20,"Coldre velado, jaqueta fechada, mãos ao longo do corpo",["curta"],"?","Sacar, 1 disparo, recarga tática (o carregador não pode cair), 1 disparo."),
+ P("543","CBTC","5, 4, 3","Humanoide",3,7,60,"Pronto baixo",["curta","longa"],"pontos","1 disparo no 5, 1 no 4 e 1 no 3. Só conta um por zona. Máximo de 12."),
+ P("mozb","CBTC","Moçambique Drill Básico","Humanoide",3,7,7,"Pronto baixo",["curta","longa"],"?","2 no peito e 1 na cabeça. Na cabeça só valem as zonas do 5 ao 3. Alma lisa desclassifica."),
+ P("moza","CBTC","Moçambique Drill Avançado","Humanoide",3,7,7,"Coldre",["curta"],"?","2 no peito e 1 na cabeça, saindo do coldre. Máximo de 15."),
+ P("srb","CBTC","Saque Rápido Básico","Humanoide",5,7,30,"Coldre",["curta"],"hf","Sacar e fazer 5 disparos seguidos."),
+ P("sra","CBTC","Saque Rápido Avançado","Humanoide",5,7,30,"Coldre",["curta"],"?","5 saques: sacar, 1 disparo, coldrear e baixar as mãos. Repetir."),
+ P("isa-357lr","ISA","357 Low Ready","B-27",3,7,7,"Pronto baixo",["curta"],"?","Engajar e disparar 3x."),
+ P("isa-357fh","ISA","357 From Holster","B-27",3,7,7,"Coldre",["curta"],"?","Sacar e disparar 3x."),
+ P("isa-ssh","ISA","Strong and Support Hand","B-27",8,7,null,"Coldre",["curta"],"?","4 com a mão forte, trocar de mão, 4 com a mão fraca."),
+ P("isa-f10lr","ISA","Fast 10 Low Ready","B-27",10,7,null,"Pronto baixo",["curta"],"?","Engajar, disparar 5x, trocar carregador, disparar 5x."),
+ P("isa-f10fh","ISA","Fast 10 From Holster","B-27",10,7,null,"Coldre",["curta"],"?","Sacar, disparar 5x, trocar carregador, disparar 5x."),
+ P("isa-4x2lr","ISA","4x2 Low Ready","4x2",8,7,null,"Pronto baixo",["curta"],"?","Engajar e disparar 2x em cada quadrante."),
+ P("isa-4x2fh","ISA","4x2 From Holster","4x2",8,7,null,"Coldre",["curta"],"?","Sacar e disparar 2x em cada quadrante."),
+ P("isa-rflr","ISA","Ring of Fire Low Ready","Ring of Fire",8,7,null,"Pronto baixo",["curta"],"?","Engajar e disparar 2x em cada quadrante."),
+ P("isa-rffh","ISA","Ring of Fire From Holster","Ring of Fire",8,7,null,"Coldre",["curta"],"?","Sacar e disparar 2x em cada quadrante.")
+];
+const BYID = Object.fromEntries(PROVAS.map(p=>[p.id,p]));
+const ALVOS = {CBTC:["TRP","4 Cores","Humanoide"],ISA:["B-27","4x2","Ring of Fire"]};
+const ALVO_NOME = {"TRP":"Alvo TRP","4 Cores":"Alvo 4 cores","Humanoide":"Alvo humanoide","B-27":"Alvo B-27","4x2":"Alvo 4x2","Ring of Fire":"Alvo Ring of Fire"};
+const RANK_TXT = {hf:"Hit factor","hf?":"Hit factor (provável)",pontos:"Pontos","pontos?":"Pontos (provável)","?":"A confirmar"};
+const MAT_PADRAO = ["Alvos oficiais: TRP, 4 cores (PF) e humanoide (CBTC)","Obreias brancas e pretas","Óculos e abafador","Timer de tiro","Celular para filmar e tripé","Coldre e porta-carregador","3 carregadores ou mais","Roupa com bolso (Turco)","Jaqueta para coldre velado (Guns N'Shot)","Munição contada por prova","Documentos: CR, CRAF e guia de tráfego"];
+const COLS = ["ID","Data","Etapa","Federação","Prova","Alvo","Categoria","Arma","Calibre","Munição","Carga","Pontos","Tempo (s)","Disparos","X","Miss","Hit factor","Observações","Atirador"];
+
+/* ---------- Utilidades ---------- */
+const $ = s=>document.querySelector(s);
+const $$ = s=>Array.from(document.querySelectorAll(s));
+const esc = s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const num = v=>{ if(v===null||v===undefined) return null; const s=String(v).trim().replace(/\s/g,"").replace(",","."); if(s==="") return null; const n=Number(s); return isFinite(n)?n:null; };
+const fmt = (n,d=2)=>n===null||n===undefined||!isFinite(n)?"–":n.toLocaleString("pt-BR",{minimumFractionDigits:d,maximumFractionDigits:d});
+const fmtInt = n=>n===null||n===undefined?"":String(n);
+const hoje = ()=>{const d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,10);};
+const mesAtual = ()=>hoje().slice(0,7);
+const MESES=["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];
+const nomeEtapa = e=>{const [y,m]=e.split("-");return MESES[+m-1]+"/"+y;};
+const etapaAnterior = e=>{let [y,m]=e.split("-").map(Number);m--;if(!m){m=12;y--;}return y+"-"+String(m).padStart(2,"0");};
+const uid = ()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+const isHF = p=>p&&(p.rank==="hf"||p.rank==="hf?");
+function calcHF(pontos,tempo){ return (pontos!==null&&tempo)?Math.round(pontos/tempo*10000)/10000:null; }
+
+function toast(t){ const el=$("#toast"); el.textContent=t; el.hidden=false; clearTimeout(toast._t); toast._t=setTimeout(()=>el.hidden=true,2600); }
+
+/* ---------- Armazenamento: aparelho + conta (quando disponível) ---------- */
+const KEY="caderneta-cbtc.v1";
+const S = { passadas:{}, estado:{ perfil:{nome:"",clube:""}, feitas:{}, material:{}, matItens:MAT_PADRAO.slice(), exp:{modo:"manual",url:"",cab:false}, ajudaVista:false, atualizado:0 } };
+function loadLocal(){ try{ const raw=localStorage.getItem(KEY); if(raw){ const d=JSON.parse(raw); if(d.passadas) S.passadas=d.passadas; if(d.estado) S.estado=Object.assign(S.estado,d.estado); } }catch(e){} }
+function saveLocal(){ try{ localStorage.setItem(KEY,JSON.stringify(S)); }catch(e){} }
+
+const remote = { db:null, col:null, ok:false, fila:Promise.resolve() };
+function setSync(ok,txt){ $("#sync-dot").classList.toggle("ok",ok); $("#sync-txt").textContent=txt; }
+function remoteWrite(docId,data){
+  if(!remote.ok) return;
+  remote.fila = remote.fila.then(()=>remote.col.doc(docId).set(data)).catch(e=>{
+    if(e&&e.code==="invalid_argument"){ remote.ok=false; setSync(false,"Salvo só neste aparelho (sem permissão para salvar na conta)"); }
+  });
+}
+async function initRemote(){
+  if(!(window.claude&&window.claude.use)) return;
+  try{
+    const [db,user]=await Promise.all([window.claude.use("db"),window.claude.use("user")]);
+    if(!db||!user) return;
+    const id=await user.id(); if(!id) return;
+    remote.db=db; remote.col=db.collection("data/users/"+id); remote.ok=true;
+    const snap=await remote.col.get();
+    let mudou=false;
+    snap.docs.forEach(d=>{
+      const v=d.data(); if(!v) return;
+      if(d.id==="estado"){ if((v.atualizado||0)>(S.estado.atualizado||0)){ S.estado=Object.assign(S.estado,v); mudou=true; } }
+      else if(d.id.startsWith("p_")){ const pid=d.id.slice(2); const loc=S.passadas[pid]; if(!loc||(v.atualizado||0)>(loc.atualizado||0)){ S.passadas[pid]=v; mudou=true; } }
+    });
+    // envia o que só existe no aparelho
+    const remotos=new Set(snap.docs.map(d=>d.id));
+    Object.values(S.passadas).forEach(p=>{ if(!remotos.has("p_"+p.id)) remoteWrite("p_"+p.id,p); });
+    if(!remotos.has("estado")) remoteWrite("estado",S.estado);
+    setSync(true,"Salvo na sua conta Claude e neste aparelho");
+    if(mudou){ saveLocal(); renderAll(); }
+  }catch(e){ /* segue só local */ }
+}
+function salvarPassada(p){ p.atualizado=Date.now(); S.passadas[p.id]=p; saveLocal(); remoteWrite("p_"+p.id,p); }
+let estadoTimer=null;
+function salvarEstado(){ S.estado.atualizado=Date.now(); saveLocal(); clearTimeout(estadoTimer); estadoTimer=setTimeout(()=>remoteWrite("estado",S.estado),800); }
+const vivas = ()=>Object.values(S.passadas).filter(p=>!p.apagado);
+
+/* ---------- Estado de interface ---------- */
+let etapa = mesAtual();
+let fed = "CBTC", armaFiltro="todas";
+let editando = null;
+let municao = "Fábrica";
+
+/* ---------- Etapa ---------- */
+function passadasDa(et,provaId){ return vivas().filter(p=>p.etapa===et&&(!provaId||p.provaId===provaId)); }
+function melhor(lista,prova){
+  if(!lista.length) return null;
+  const hf=isHF(prova);
+  return lista.slice().sort((a,b)=> hf ? (b.hf??-1)-(a.hf??-1) : ((b.pontos??-1)-(a.pontos??-1)) || ((a.tempo??1e9)-(b.tempo??1e9)) )[0];
+}
+function valorMelhor(p,prova){ if(!p) return "–"; return isHF(prova)? "HF "+fmt(p.hf,4) : fmt(p.pontos,0)+" pts"; }
+
+function renderEtapa(){
+  const feitasMan = S.estado.feitas[etapa]||{};
+  const provas = PROVAS.filter(p=>p.fed===fed && (armaFiltro==="todas"||p.armas.includes(armaFiltro)));
+  let feitas=0, dispFalta=0;
+  const html = ALVOS[fed].map(alvo=>{
+    const ps = provas.filter(p=>p.alvo===alvo).sort((a,b)=>a.disp-b.disp);
+    if(!ps.length) return "";
+    const tot=ps.reduce((s,p)=>s+p.disp,0);
+    return `<div class="grupo"><div class="grupo-h"><span class="fed ${fed==="ISA"?"isa":""}">${fed}</span><h3>${esc(ALVO_NOME[alvo])}</h3><span class="small muted">${ps.length} provas · ${tot} disparos</span></div><div class="lista">`+
+    ps.map(p=>{
+      const pass=passadasDa(etapa,p.id); const temRes=pass.length>0; const ok=temRes||!!feitasMan[p.id];
+      if(ok) feitas++; else dispFalta+=p.disp;
+      const b=melhor(pass,p);
+      return `<div class="prova" data-id="${p.id}">
+        <div class="prova-row">
+          <input type="checkbox" class="check" aria-label="Feita: ${esc(p.nome)}" ${ok?"checked":""} ${temRes?"disabled title='Tem resultado lançado'":""} data-feita="${p.id}">
+          <div style="min-width:0"><div class="prova-nome">${esc(p.nome)}</div>
+            <div class="meta"><span><b>${p.disp}</b> disp.</span><span><b>${p.dist}</b> m</span><span><b>${p.tempo?p.tempo+" s":"s/ limite"}</b></span><span>${esc(p.saida.split(/[.;,]/)[0])}</span></div>
+            ${temRes?`<div class="feito">${pass.length} passada${pass.length>1?"s":""} · melhor ${valorMelhor(b,p)}</div>`:""}
+          </div>
+          <button class="expand" aria-label="Detalhes de ${esc(p.nome)}" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg></button>
+        </div>
+        <div class="det">
+          <dl><dt>Saída</dt><dd>${esc(p.saida)}</dd><dt>Execução</dt><dd>${esc(p.exec)}</dd><dt>Armas</dt><dd>${p.armas.map(a=>a==="12"?"Cal. 12":a[0].toUpperCase()+a.slice(1)).join(", ")}</dd><dt>Ranking</dt><dd><span class="badge ${isHF(p)?"hf":""}">${RANK_TXT[p.rank]}</span></dd></dl>
+          <button class="btn sec" data-lancar="${p.id}">Lançar resultado desta prova</button>
+        </div></div>`;
+    }).join("")+`</div></div>`;
+  }).join("");
+  $("#grupos").innerHTML = html || `<div class="empty">Nenhuma prova da ${fed} para esse tipo de arma.</div>`;
+  const total=provas.length;
+  $("#prog-num").textContent=feitas+"/"+total;
+  $("#prog-label").textContent="Provas feitas em "+nomeEtapa(etapa);
+  $("#prog-disp").innerHTML= total? (feitas===total?"Etapa completa":`Faltam <b class="num">${dispFalta}</b> disparos`) : "";
+  $("#prog-bar").style.width = total? (feitas/total*100)+"%" : "0";
+}
+
+/* ---------- Formulário ---------- */
+function preencherSelectProvas(){
+  const sel=$("#f-prova");
+  sel.innerHTML = ["CBTC","ISA"].map(f=>`<optgroup label="${f}">`+ALVOS[f].map(a=>PROVAS.filter(p=>p.fed===f&&p.alvo===a).sort((x,y)=>x.disp-y.disp).map(p=>`<option value="${p.id}">${esc(p.nome)} · ${p.disp} disp.</option>`).join("")).join("")+`</optgroup>`).join("");
+}
+function armasSalvas(){ const m=new Map(); vivas().sort((a,b)=>(b.atualizado||0)-(a.atualizado||0)).forEach(p=>{ if(p.arma&&!m.has(p.arma)) m.set(p.arma,p); }); return m; }
+function renderDatalist(){ $("#dl-armas").innerHTML=[...armasSalvas().keys()].map(a=>`<option value="${esc(a)}">`).join(""); }
+function setMun(v){ municao=v; $$("#f-mun button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===v)); $("#wrap-carga").hidden = v!=="Recarga"; }
+function atualizaHF(){
+  const p=BYID[$("#f-prova").value]; const hf=calcHF(num($("#f-pontos").value),num($("#f-tempo").value));
+  $("#hf-val").textContent = hf===null?"–":fmt(hf,4);
+  $("#hf-nota").textContent = !p?"pontos ÷ tempo": isHF(p)? "conta no ranking desta prova" : p.rank.startsWith("pontos")? "esta prova é por pontos; o HF fica só como referência" : "critério da prova ainda a confirmar";
+}
+function onProvaChange(){
+  const p=BYID[$("#f-prova").value]; if(!p) return;
+  if(!editando) $("#f-disp").value=p.disp;
+  if(p.armas.length===1&&p.armas[0]==="12") $("#f-cat").value="Cal. 12";
+  atualizaHF();
+}
+function limparForm(provaId){
+  editando=null; $("#form").reset(); $("#form-titulo").textContent="Lançar passada"; $("#btn-salvar").textContent="Salvar passada"; $("#btn-cancelar").hidden=true;
+  $("#f-data").value = etapa===mesAtual()? hoje() : etapa+"-01";
+  const ult = vivas().sort((a,b)=>(b.atualizado||0)-(a.atualizado||0))[0];
+  if(ult){ $("#f-cat").value=ult.categoria||"Curta restrita"; $("#f-arma").value=ult.arma||""; $("#f-cal").value=ult.calibre||""; setMun(ult.municao||"Fábrica"); $("#f-carga").value=ult.carga||""; } else setMun("Fábrica");
+  if(provaId) $("#f-prova").value=provaId;
+  onProvaChange();
+}
+function editar(id){
+  const p=S.passadas[id]; if(!p) return; editando=id; mostrar("lancar");
+  $("#form-titulo").textContent="Editar passada"; $("#btn-salvar").textContent="Salvar alterações"; $("#btn-cancelar").hidden=false;
+  $("#f-prova").value=p.provaId; $("#f-data").value=p.data; $("#f-cat").value=p.categoria; $("#f-arma").value=p.arma||""; $("#f-cal").value=p.calibre||"";
+  setMun(p.municao||"Fábrica"); $("#f-carga").value=p.carga||"";
+  $("#f-pontos").value=p.pontos===null?"":String(p.pontos).replace(".",","); $("#f-tempo").value=p.tempo===null?"":String(p.tempo).replace(".",",");
+  $("#f-disp").value=fmtInt(p.disparos); $("#f-x").value=fmtInt(p.x); $("#f-miss").value=fmtInt(p.miss); $("#f-obs").value=p.obs||"";
+  atualizaHF();
+}
+function onSubmit(ev){
+  ev.preventDefault();
+  const prova=BYID[$("#f-prova").value]; const data=$("#f-data").value;
+  if(!prova||!data){ toast("Escolha a prova e a data."); return; }
+  const pontos=num($("#f-pontos").value), tempo=num($("#f-tempo").value);
+  if(pontos===null&&tempo===null){ toast("Preencha pelo menos pontos ou tempo."); return; }
+  const base = editando? S.passadas[editando] : { id:uid(), criado:Date.now(), exportado:false, enviado:false };
+  const p = Object.assign({}, base, {
+    data, etapa:data.slice(0,7), provaId:prova.id, prova:prova.nome, fed:prova.fed, alvo:prova.alvo,
+    categoria:$("#f-cat").value, arma:$("#f-arma").value.trim(), calibre:$("#f-cal").value.trim(),
+    municao, carga: municao==="Recarga"?$("#f-carga").value.trim():"",
+    pontos, tempo, disparos:num($("#f-disp").value), x:num($("#f-x").value), miss:num($("#f-miss").value),
+    hf: calcHF(pontos,tempo), obs:$("#f-obs").value.trim()
+  });
+  if(editando){ p.exportado=false; p.enviado=false; }
+  salvarPassada(p);
+  const msg = editando? "Alterações salvas" : "Passada salva";
+  if(p.etapa!==etapa){ etapa=p.etapa; $("#etapa").value=etapa; }
+  limparForm(prova.id); renderAll();
+  toast(msg + (S.estado.exp.modo==="auto"?" · enviando":""));
+  if(S.estado.exp.modo==="auto") enviarPendentes(true);
+}
+
+/* ---------- Resultados ---------- */
+function renderHist(){
+  const atual=passadasDa(etapa); const ant=etapaAnterior(etapa);
+  $("#hist-sub").textContent=`Melhor resultado por prova em ${nomeEtapa(etapa)}, comparado com ${nomeEtapa(ant)}.`;
+  const ids=[...new Set(atual.map(p=>p.provaId))].sort((a,b)=>PROVAS.indexOf(BYID[a])-PROVAS.indexOf(BYID[b]));
+  if(!ids.length){
+    $("#melhores").innerHTML=`<div class="empty"><p>Nenhuma passada lançada em ${nomeEtapa(etapa)}.</p><button class="btn" data-goto="lancar">Lançar a primeira</button></div>`;
+    $("#passadas").innerHTML=`<div class="empty"><p>As passadas aparecem aqui, da mais recente para a mais antiga.</p></div>`;
+    return;
+  }
+  $("#melhores").innerHTML = ids.map(id=>{
+    const prova=BYID[id]; const b=melhor(passadasDa(etapa,id),prova); const a=melhor(passadasDa(ant,id),prova);
+    let d="";
+    if(a){ const hf=isHF(prova); const va=hf?a.hf:a.pontos, vb=hf?b.hf:b.pontos;
+      if(va!==null&&vb!==null){ const diff=vb-va; d=`<span class="delta ${diff>0?"up":diff<0?"down":""}">${diff>0?"▲":diff<0?"▼":"="} ${fmt(Math.abs(diff),hf?2:0)}</span>`; } }
+    else d=`<span class="small muted">1ª vez</span>`;
+    return `<div class="best"><div style="min-width:0"><div class="prova-nome">${esc(prova.nome)}</div><div class="meta">${esc(b.categoria)} · ${esc(b.arma||"arma não informada")} · <span class="num">${fmt(b.tempo)} s</span></div></div><span class="badge ${isHF(prova)?"hf":""} num">${valorMelhor(b,prova)}</span>${d}</div>`;
+  }).join("");
+  $("#passadas").innerHTML = atual.sort((a,b)=>(b.data+b.criado).localeCompare(a.data+a.criado)).map(p=>`
+    <div class="passada"><div style="min-width:0"><div class="prova-nome">${esc(p.prova)}</div>
+      <div class="meta"><span>${p.data.split("-").reverse().join("/")}</span><span>${esc(p.categoria)}</span><span>${esc([p.arma,p.calibre].filter(Boolean).join(" · "))}</span><span>${esc(p.municao)}</span></div></div>
+      <div class="num" style="text-align:right"><div>${fmt(p.pontos,0)} pts</div><div class="small muted">${fmt(p.tempo)} s${p.hf!==null?" · HF "+fmt(p.hf,2):""}</div></div>
+      <div class="small muted" style="grid-column:1/-1">${p.disparos??"–"} disp. · ${p.x??0} X · ${p.miss??0} miss${p.obs?" · "+esc(p.obs):""}${p.exportado||p.enviado?" · exportada":""}</div>
+      <div class="acts"><button data-edit="${p.id}">Editar</button><button data-del="${p.id}">Apagar</button></div></div>`).join("");
+}
+
+/* ---------- Material ---------- */
+function renderMat(){
+  const marc=S.estado.material[etapa]||{};
+  $("#mat-lista").innerHTML = S.estado.matItens.map((t,i)=>`<label class="mat"><input type="checkbox" class="check" data-mat="${i}" ${marc[t]?"checked":""}><span>${esc(t)}</span><button type="button" class="del" data-matdel="${i}" aria-label="Remover ${esc(t)}">×</button></label>`).join("") || `<div class="empty">Lista vazia. Adicione itens abaixo.</div>`;
+}
+
+/* ---------- Exportação ---------- */
+function linha(p){ return [p.id,p.data,p.etapa,p.fed||BYID[p.provaId]?.fed||"",p.prova,p.alvo,p.categoria,p.arma,p.calibre,p.municao,p.carga,p.pontos,p.tempo,p.disparos,p.x,p.miss, isHF(BYID[p.provaId])?p.hf:null, p.obs, S.estado.perfil.nome||""]; }
+function selecionadas(){
+  const per=$("#exp-periodo").value;
+  let l=vivas();
+  if(per==="novas") l=l.filter(p=>!p.exportado);
+  if(per==="etapa") l=l.filter(p=>p.etapa===etapa);
+  return l.sort((a,b)=>(a.data+a.criado).localeCompare(b.data+b.criado));
+}
+const br = v=>v===null||v===undefined?"":(typeof v==="number"?String(v).replace(".",","):String(v));
+function tsv(l,cab){ const rows=l.map(p=>linha(p).map(v=>br(v).replace(/[\t\n\r]+/g," ")).join("\t")); if(cab) rows.unshift(COLS.join("\t")); return rows.join("\n"); }
+function csv(l){ const q=v=>{ const s=br(v); return /[;"\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s; }; return "﻿"+[COLS.join(";")].concat(l.map(p=>linha(p).map(q).join(";"))).join("\r\n"); }
+function marcarExportadas(l){ l.forEach(p=>{ if(!p.exportado){ p.exportado=true; salvarPassada(p); } }); renderExp(); renderHist(); }
+function nomeArq(ext){ const n=(S.estado.perfil.nome||"atirador").normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^\w]+/g,"-").replace(/^-|-$/g,"").toLowerCase(); return `cbtc-${n}-${hoje()}.${ext}`; }
+
+async function oferecerArquivo(nome,blob){
+  if(window.claude&&window.claude.use){
+    const dl=await window.claude.use("downloads");
+    if(dl){ try{ await dl.save({filename:nome,data:blob}); return true; }catch(e){ if(e&&e.code==="declined") return false; toast("Não foi possível salvar o arquivo aqui. Use Copiar."); return false; } }
+    toast("Baixar arquivo não está disponível nesta tela. Use Copiar."); return false;
+  }
+  const file = new File([blob],nome,{type:blob.type});
+  if(navigator.canShare&&navigator.canShare({files:[file]})){
+    try{ await navigator.share({files:[file],title:nome}); return true; }catch(e){ if(e&&e.name==="AbortError") return false; }
+  }
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=nome; document.body.appendChild(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},2000); return true;
+}
+async function copiar(txt){
+  try{ await navigator.clipboard.writeText(txt); return true; }
+  catch(e){ const ta=document.createElement("textarea"); ta.value=txt; ta.style.position="fixed"; ta.style.opacity="0"; document.body.appendChild(ta); ta.select(); let ok=false; try{ ok=document.execCommand("copy"); }catch(_){} ta.remove(); return ok; }
+}
+function renderExp(){
+  const modo=S.estado.exp.modo;
+  $$("#exp-modo button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===modo));
+  $("#box-manual").hidden = false;
+  $("#box-auto").hidden = modo!=="auto";
+  const bm=$("#box-manual"), ba=$("#box-auto"); if(modo==="auto") bm.before(ba); else bm.after(ba);
+  $("#exp-modo-txt").textContent = modo==="manual"
+    ? "Padrão. Você copia ou baixa as passadas e cola na sua planilha quando quiser."
+    : "Cada passada salva vai sozinha para a sua planilha do Google quando houver internet. A exportação manual continua disponível.";
+  const l=selecionadas(); const novas=vivas().filter(p=>!p.exportado).length;
+  $("#exp-cont").textContent = `${l.length} passada${l.length===1?"":"s"} selecionada${l.length===1?"":"s"} · ${novas} ainda não exportada${novas===1?"":"s"}`;
+  $("#exp-cab").checked = !!S.estado.exp.cab;
+  $("#auto-url").value = S.estado.exp.url||"";
+  const pend=vivas().filter(p=>!p.enviado).length;
+  $("#auto-status").textContent = !S.estado.exp.url ? "Cole o endereço do script para ligar o envio." : pend? `${pend} passada${pend>1?"s":""} aguardando envio.` : "Tudo enviado.";
+  $("#p-nome").value=S.estado.perfil.nome||""; $("#p-clube").value=S.estado.perfil.clube||"";
+}
+async function enviarPendentes(silencioso,teste){
+  const url=(S.estado.exp.url||"").trim();
+  if(!/^https:\/\/script\.google\.com\//.test(url)){ if(!silencioso) toast("Cole o endereço do script (começa com https://script.google.com/)."); return; }
+  if(!navigator.onLine){ if(!silencioso) toast("Sem internet. Envio quando a conexão voltar."); return; }
+  const l = teste? [] : vivas().filter(p=>!p.enviado);
+  const linhas = teste? [["TESTE-"+uid(),hoje(),mesAtual(),"CBTC","Linha de teste","","","","","","",0,0,0,0,0,null,"Pode apagar esta linha",S.estado.perfil.nome||""]] : l.map(linha);
+  if(!linhas.length){ if(!silencioso) toast("Nada pendente."); return; }
+  try{
+    await fetch(url,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({atirador:S.estado.perfil.nome||"",linhas})});
+    l.forEach(p=>{ p.enviado=true; p.exportado=true; salvarPassada(p); });
+    renderExp(); renderHist();
+    toast(teste?"Teste enviado. Confira a planilha.":`${l.length} passada${l.length>1?"s":""} enviada${l.length>1?"s":""}`);
+  }catch(e){
+    if(!silencioso) toast(dentroDoClaude()? "Aqui no Claude o envio é bloqueado. Funciona no app instalado." : "Falhou o envio. Confira o endereço e a internet.");
+  }
+}
+const dentroDoClaude = ()=>!!(window.claude&&window.claude.use);
+
+/* ---------- Importar CSV ---------- */
+function parseCSV(txt){
+  txt=txt.replace(/^﻿/,""); const sep = txt.split("\n")[0].includes(";")?";":(txt.split("\n")[0].includes("\t")?"\t":",");
+  const rows=[]; let row=[],cur="",q=false;
+  for(let i=0;i<txt.length;i++){ const c=txt[i];
+    if(q){ if(c==='"'){ if(txt[i+1]==='"'){cur+='"';i++;} else q=false; } else cur+=c; }
+    else if(c==='"') q=true; else if(c===sep){ row.push(cur); cur=""; } else if(c==="\n"){ row.push(cur.replace(/\r$/,"")); rows.push(row); row=[]; cur=""; } else cur+=c; }
+  if(cur||row.length){ row.push(cur.replace(/\r$/,"")); rows.push(row); }
+  return rows;
+}
+function importar(txt){
+  const rows=parseCSV(txt); if(!rows.length) return 0;
+  const h=rows[0].map(s=>s.trim()); const ix=n=>h.indexOf(n);
+  if(ix("ID")<0||ix("Prova")<0){ toast("Esse arquivo não parece exportado por este app."); return 0; }
+  let n=0;
+  rows.slice(1).forEach(r=>{
+    const id=r[ix("ID")]; if(!id||S.passadas[id]) return;
+    const prova=PROVAS.find(p=>p.nome===r[ix("Prova")]);
+    const g=k=>r[ix(k)]??"";
+    const pontos=num(g("Pontos")), tempo=num(g("Tempo (s)"));
+    S.passadas[id]={ id, criado:Date.now(), data:g("Data"), etapa:g("Etapa")||g("Data").slice(0,7), provaId:prova?prova.id:"", prova:g("Prova"), fed:g("Federação"), alvo:g("Alvo"), categoria:g("Categoria"), arma:g("Arma"), calibre:g("Calibre"), municao:g("Munição")||"Fábrica", carga:g("Carga"), pontos, tempo, disparos:num(g("Disparos")), x:num(g("X")), miss:num(g("Miss")), hf:calcHF(pontos,tempo), obs:g("Observações"), exportado:true, enviado:true, atualizado:Date.now() };
+    remoteWrite("p_"+id,S.passadas[id]); n++;
+  });
+  saveLocal(); renderAll(); return n;
+}
+
+/* ---------- Código do Apps Script ---------- */
+const GS = `// Caderneta CBTC: recebe as passadas do app e grava na aba "Histórico".
+// Não grava a mesma passada duas vezes (confere a coluna ID).
+const ABA = 'Histórico';
+
+function doPost(e) {
+  const lock = LockService.getScriptLock();
+  lock.waitLock(20000);
+  try {
+    const corpo = JSON.parse(e.postData.contents);
+    const aba = SpreadsheetApp.getActive().getSheetByName(ABA);
+    const ultima = aba.getLastRow();
+    const ids = new Set(ultima > 1 ? aba.getRange(2, 1, ultima - 1, 1).getValues().flat().map(String) : []);
+    const novas = (corpo.linhas || [])
+      .filter(l => !ids.has(String(l[0])))
+      .map(l => l.map(v => v === null ? '' : v));
+    if (novas.length) {
+      const inicio = aba.getLastRow() + 1;
+      aba.getRange(inicio, 3, novas.length, 1).setNumberFormat('@'); // etapa fica como texto (2026-10)
+      aba.getRange(inicio, 1, novas.length, novas[0].length).setValues(novas);
+    }
+    return ContentService.createTextOutput(JSON.stringify({ ok: true, novas: novas.length }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } finally {
+    lock.releaseLock();
+  }
+}`;
+
+/* ---------- Navegação ---------- */
+function mostrar(v){
+  ["etapa","lancar","hist","mat","exp"].forEach(n=>$("#v-"+n).hidden = n!==v);
+  $$("nav.tabs button").forEach(b=>b.toggleAttribute("aria-current",b.dataset.view===v)); $$("nav.tabs button").forEach(b=>{ if(b.dataset.view===v) b.setAttribute("aria-current","page"); });
+  window.scrollTo(0,0);
+  try{ sessionStorage.setItem("cbtc.view",v); }catch(e){}
+}
+function renderAll(){ renderEtapa(); renderHist(); renderMat(); renderExp(); renderDatalist();
+  $("#sub-perfil").textContent = S.estado.perfil.nome? S.estado.perfil.nome+(S.estado.perfil.clube?" · "+S.estado.perfil.clube:"") : "Provas e resultados"; }
+
+let confirmar=null;
+function pedirConfirmacao(txt,fn){ $("#confirm-txt").textContent=txt; confirmar=fn; $("#confirm").hidden=false; }
+
+function bind(){
+  $("#etapa").value=etapa;
+  $("#etapa").addEventListener("change",e=>{ if(e.target.value){ etapa=e.target.value; renderAll(); if(!editando) limparForm($("#f-prova").value); } });
+  $$("[data-fed]").forEach(b=>b.addEventListener("click",()=>{ fed=b.dataset.fed; $$("[data-fed]").forEach(x=>x.setAttribute("aria-pressed",x===b)); renderEtapa(); }));
+  $$("[data-arma]").forEach(b=>b.addEventListener("click",()=>{ armaFiltro=b.dataset.arma; $$("[data-arma]").forEach(x=>x.setAttribute("aria-pressed",x===b)); renderEtapa(); }));
+  $$("nav.tabs button").forEach(b=>b.addEventListener("click",()=>mostrar(b.dataset.view)));
+  $("#grupos").addEventListener("click",e=>{
+    const ex=e.target.closest(".expand"); if(ex){ const pr=ex.closest(".prova"); pr.classList.toggle("open"); ex.setAttribute("aria-expanded",pr.classList.contains("open")); return; }
+    const la=e.target.closest("[data-lancar]"); if(la){ limparForm(la.dataset.lancar); mostrar("lancar"); }
+  });
+  $("#grupos").addEventListener("change",e=>{ const id=e.target.dataset.feita; if(!id) return; const m=S.estado.feitas[etapa]||(S.estado.feitas[etapa]={}); if(e.target.checked) m[id]=true; else delete m[id]; salvarEstado(); renderEtapa(); });
+  document.addEventListener("click",e=>{ const g=e.target.closest("[data-goto]"); if(g){ limparForm(); mostrar(g.dataset.goto); } });
+  $("#form").addEventListener("submit",onSubmit);
+  $("#f-prova").addEventListener("change",onProvaChange);
+  ["#f-pontos","#f-tempo"].forEach(s=>$(s).addEventListener("input",atualizaHF));
+  $$("#f-mun button").forEach(b=>b.addEventListener("click",()=>setMun(b.dataset.v)));
+  $("#f-arma").addEventListener("change",()=>{ const p=armasSalvas().get($("#f-arma").value.trim()); if(p){ if(!$("#f-cal").value) $("#f-cal").value=p.calibre||""; $("#f-cat").value=p.categoria||$("#f-cat").value; } });
+  $("#btn-cancelar").addEventListener("click",()=>{ limparForm(); mostrar("hist"); });
+  $("#passadas").addEventListener("click",e=>{
+    const ed=e.target.closest("[data-edit]"); if(ed){ editar(ed.dataset.edit); return; }
+    const de=e.target.closest("[data-del]"); if(de){ const p=S.passadas[de.dataset.del]; pedirConfirmacao(`Apagar a passada de ${p.prova} em ${p.data.split("-").reverse().join("/")}?`,()=>{ p.apagado=true; salvarPassada(p); renderAll(); toast("Passada apagada"); }); }
+  });
+  $("#confirm-sim").addEventListener("click",()=>{ $("#confirm").hidden=true; if(confirmar) confirmar(); confirmar=null; });
+  $("#confirm-nao").addEventListener("click",()=>{ $("#confirm").hidden=true; confirmar=null; });
+  $("#mat-lista").addEventListener("change",e=>{ const i=e.target.dataset.mat; if(i===undefined) return; const t=S.estado.matItens[i]; const m=S.estado.material[etapa]||(S.estado.material[etapa]={}); if(e.target.checked) m[t]=true; else delete m[t]; salvarEstado(); });
+  $("#mat-lista").addEventListener("click",e=>{ const d=e.target.closest("[data-matdel]"); if(!d) return; e.preventDefault(); S.estado.matItens.splice(+d.dataset.matdel,1); salvarEstado(); renderMat(); });
+  $("#mat-form").addEventListener("submit",e=>{ e.preventDefault(); const v=$("#mat-novo").value.trim(); if(!v) return; S.estado.matItens.push(v); $("#mat-novo").value=""; salvarEstado(); renderMat(); });
+  $("#mat-limpar").addEventListener("click",()=>{ S.estado.material[etapa]={}; salvarEstado(); renderMat(); toast("Lista desmarcada"); });
+  $$("#exp-modo button").forEach(b=>b.addEventListener("click",()=>{ S.estado.exp.modo=b.dataset.v; salvarEstado(); renderExp(); }));
+  $("#exp-periodo").addEventListener("change",renderExp);
+  $("#exp-cab").addEventListener("change",e=>{ S.estado.exp.cab=e.target.checked; salvarEstado(); });
+  $("#exp-copiar").addEventListener("click",async()=>{ const l=selecionadas(); if(!l.length){ toast("Nada para exportar."); return; } const ok=await copiar(tsv(l,$("#exp-cab").checked)); if(ok){ marcarExportadas(l); toast(`${l.length} linha${l.length>1?"s":""} copiada${l.length>1?"s":""}. Cole na planilha.`); } else toast("Não consegui copiar. Tente Baixar CSV."); });
+  $("#exp-csv").addEventListener("click",async()=>{ const l=selecionadas(); if(!l.length){ toast("Nada para exportar."); return; } const ok=await oferecerArquivo(nomeArq("csv"),new Blob([csv(l)],{type:"text/csv"})); if(ok){ marcarExportadas(l); toast("CSV pronto"); } });
+  $("#exp-xlsx").addEventListener("click",async()=>{ const l=selecionadas(); if(!l.length){ toast("Nada para exportar."); return; } if(!window.XLSX){ toast("Excel indisponível sem internet. Use CSV ou Copiar."); return; }
+    const ws=XLSX.utils.aoa_to_sheet([COLS].concat(l.map(linha))); const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,"Histórico");
+    const buf=XLSX.write(wb,{bookType:"xlsx",type:"array"}); const ok=await oferecerArquivo(nomeArq("xlsx"),new Blob([buf],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"})); if(ok){ marcarExportadas(l); toast("Planilha pronta"); } });
+  $("#auto-url").addEventListener("change",e=>{ S.estado.exp.url=e.target.value.trim(); salvarEstado(); renderExp(); });
+  $("#auto-enviar").addEventListener("click",()=>enviarPendentes(false));
+  $("#auto-testar").addEventListener("click",()=>{ S.estado.exp.url=$("#auto-url").value.trim(); salvarEstado(); enviarPendentes(false,true); });
+  $("#gs-code").textContent=GS;
+  $("#gs-copiar").addEventListener("click",async()=>{ toast(await copiar(GS)?"Código copiado":"Selecione e copie o código à mão"); });
+  $("#p-nome").addEventListener("change",e=>{ S.estado.perfil.nome=e.target.value.trim(); salvarEstado(); renderAll(); });
+  $("#p-clube").addEventListener("change",e=>{ S.estado.perfil.clube=e.target.value.trim(); salvarEstado(); renderAll(); });
+  $("#imp-file").addEventListener("change",e=>{ const f=e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=()=>{ const n=importar(String(r.result)); if(n) toast(`${n} passada${n>1?"s":""} importada${n>1?"s":""}`); else toast("Nenhuma passada nova no arquivo."); e.target.value=""; }; r.readAsText(f,"utf-8"); });
+  $("#btn-ajuda").addEventListener("click",()=>$("#ajuda").hidden=false);
+  $("#ajuda-ok").addEventListener("click",()=>{ $("#ajuda").hidden=true; if(!S.estado.ajudaVista){ S.estado.ajudaVista=true; salvarEstado(); } });
+  window.addEventListener("online",()=>{ if(S.estado.exp.modo==="auto") enviarPendentes(true); });
+}
+
+/* ---------- Início ---------- */
+loadLocal();
+preencherSelectProvas();
+bind();
+limparForm();
+renderAll();
+let v0="etapa"; try{ v0=sessionStorage.getItem("cbtc.view")||"etapa"; }catch(e){}
+mostrar(v0);
+if(!S.estado.ajudaVista) $("#ajuda").hidden=false;
+initRemote();
+if(!dentroDoClaude() && "serviceWorker" in navigator && location.protocol==="https:"){ navigator.serviceWorker.register("sw.js").catch(()=>{}); }
+if(S.estado.exp.modo==="auto") setTimeout(()=>enviarPendentes(true),1500);
+})();
+</script>
+</body>
+</html>
