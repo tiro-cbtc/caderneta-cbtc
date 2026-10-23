@@ -1,5 +1,5 @@
 // Caderneta CBTC: funciona sem internet depois da primeira abertura.
-const CACHE = 'caderneta-v2-2026-10-23';
+const CACHE = 'caderneta-v3-2026-10-23';
 const ARQUIVOS = ['./', './index.html', './manifest.webmanifest', './vendor/xlsx.full.min.js',
   './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(ARQUIVOS)).then(() => self.skipWaiting())); });

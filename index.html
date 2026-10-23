@@ -120,6 +120,9 @@ nav.tabs button[aria-current="page"]{color:var(--green);background:var(--green-s
 .field label{font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
 .field input,.field select,.field textarea{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px;font-size:16px;width:100%;min-width:0}
 .field textarea{min-height:64px;resize:vertical}
+.field input[type="date"]{-webkit-appearance:none;appearance:none;display:block;min-height:46px;text-align:left}
+.field input[type="date"]::-webkit-date-and-time-value{text-align:left}
+.etapa input[type="month"]::-webkit-date-and-time-value{text-align:center}
 .big-in{font-family:var(--f-mono);font-size:20px!important;font-weight:600}
 .seg{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-radius:8px;overflow:hidden}
 .seg button{border:0;background:var(--bg);padding:10px;font-weight:500}
