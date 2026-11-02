@@ -184,6 +184,21 @@ nav.tabs button{font-size:11px;padding:6px 0}
 .tag.pend{background:var(--danger-soft);color:var(--danger)}
 .versao{font-size:12px;color:var(--muted);text-align:center}
 .check.small{width:22px;height:22px}
+/* v2.1: meus documentos */
+[hidden]{display:none!important}
+.aviso.venc{background:var(--danger-soft)}
+.aviso.venc b{color:var(--danger)}
+.stack{display:flex;flex-direction:column;gap:12px}
+.chave{display:flex;gap:10px;align-items:center;font-weight:600}
+.prazo{display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:10px 12px;border-top:1px solid var(--line);align-items:center}
+.prazo:first-child{border-top:0}
+.prazo .quando{font-size:12.5px;font-weight:600;text-align:right}
+.prazo .quando.venc{color:var(--danger)}.prazo .quando.perto{color:var(--brass)}
+.tbl330{display:grid;grid-template-columns:repeat(3,1fr);gap:4px 12px;font-size:13px;margin:6px 0}
+.tbl330 span b{font-family:var(--f-mono);font-weight:600}
+details.docs{border:1px solid var(--line);border-radius:var(--r);padding:10px 12px}
+details.docs[open]{display:flex;flex-direction:column;gap:10px}
+details.docs[open] summary{margin-bottom:0}
 </style>
 
 <header class="top">
@@ -203,6 +218,7 @@ nav.tabs button{font-size:11px;padding:6px 0}
     <div class="aviso" id="aviso-ios" hidden><span><b>Instale na Tela de Início.</b> Usando só pelo Safari, o iPhone pode apagar seus dados depois de alguns dias sem abrir.</span><button data-ajuda>Como</button></div>
     <div class="aviso" id="aviso-equip" hidden><span><b>Cadastre suas armas</b> para marcar as provas feitas por categoria e preencher o lançamento sozinho.</span><button data-goto-mais>Cadastrar</button></div>
     <div class="aviso" id="aviso-prazo" hidden></div>
+    <div id="avisos-docs" style="display:contents"></div>
     <div class="progress">
       <div><div class="small muted" id="prog-label">Provas feitas na etapa</div><div class="big num" id="prog-num">0/21</div></div>
       <div class="small muted" style="text-align:right" id="prog-disp"></div>
@@ -306,6 +322,28 @@ nav.tabs button{font-size:11px;padding:6px 0}
       <button class="btn sec block" id="equip-novo">Cadastrar arma</button>
     </div>
 
+    <div class="card" id="box-docs">
+      <h3>Meus documentos</h3>
+      <label class="chave"><input type="checkbox" class="check small" id="docs-ativo"> Acompanhar documentos e prazos</label>
+      <p class="hint" id="docs-off-txt">Opcional. Guarde CR, CRAF e guia de tráfego e receba aviso na tela Etapa antes dos prazos.</p>
+      <div class="stack" id="docs-on" hidden>
+        <div class="lista" id="docs-prazos"></div>
+        <p class="hint">O número e a validade do CR ficam em <b>Seus dados</b>, logo abaixo. Os de cada arma ficam no cadastro dela: Minhas armas → Editar → Documentos.</p>
+        <details><summary>Prazos e regras</summary>
+          <ul class="steps small" style="list-style:disc">
+            <li><b>CRAF:</b> o prazo que vale é o “Renovar até”, não a validade impressa. CRAF de CAC emitido antes de 21/07/2023 passou a valer 3 anos a partir dessa data (IN DG/PF 311/2025, art. 68, parágrafo único), e a renovação segue a IN DG/PF 330/2026, pelo mês do seu nascimento. Data-limite para protocolar:
+              <div class="tbl330"><span>jan <b>01/02/2027</b></span><span>fev <b>01/03/2027</b></span><span>mar <b>31/03/2027</b></span><span>abr <b>30/04/2027</b></span><span>mai <b>31/05/2027</b></span><span>jun <b>30/06/2027</b></span><span>jul <b>02/08/2027</b></span><span>ago <b>31/08/2026</b></span><span>set <b>30/09/2026</b></span><span>out <b>03/11/2026</b></span><span>nov <b>30/11/2026</b></span><span>dez <b>04/01/2027</b></span></div>
+              O app não calcula: informe a data no cadastro da arma. Sem “Renovar até”, o aviso usa a validade impressa.</li>
+            <li><b>Guia de tráfego de treino:</b> vale no máximo 6 meses (IN 311, art. 42). O aviso usa a data “válida até” que você informar.</li>
+            <li><b>CR:</b> a revalidação deve ser pedida até 30 dias antes do vencimento (IN 311, art. 22, §1º). O aviso já desconta esses 30 dias.</li>
+            <li>Aviso em amarelo a 60 dias ou menos do prazo; em vermelho depois de vencido.</li>
+          </ul>
+        </details>
+        <button class="btn sec block" id="docs-exp">Exportar documentos (CSV)</button>
+        <p class="hint">Os documentos ficam só neste aparelho: não entram na exportação de passadas, na planilha nem no envio automático. Para trocar de aparelho, exporte aqui e importe no novo em Cópia de segurança → Importar CSV.</p>
+      </div>
+    </div>
+
     <div class="card">
       <div class="field"><label>Forma de envio para a planilha</label>
         <div class="seg" id="exp-modo"><button type="button" data-v="manual" aria-pressed="true">Manual</button><button type="button" data-v="auto" aria-pressed="false">Automático</button></div>
@@ -349,12 +387,16 @@ nav.tabs button{font-size:11px;padding:6px 0}
         <div class="field"><label for="p-nome">Nome do atirador</label><input id="p-nome" autocomplete="name"></div>
         <div class="field"><label for="p-clube">Clube</label><input id="p-clube"></div>
       </div>
-      <p class="hint">O nome entra no arquivo exportado e no envio automático.</p>
+      <div class="grid2" id="perfil-cr" hidden>
+        <div class="field"><label for="d-cr">Nº do CR</label><input id="d-cr" autocomplete="off"></div>
+        <div class="field"><label for="d-cr-val">Validade do CR</label><input type="date" id="d-cr-val"></div>
+      </div>
+      <p class="hint">O nome entra no arquivo exportado e no envio automático.<span id="perfil-cr-txt" hidden> O CR fica só neste aparelho.</span></p>
     </div>
 
     <div class="card">
       <h3>Cópia de segurança</h3>
-      <p class="hint">Trocou de celular? Exporte tudo em CSV no aparelho antigo e importe aqui. Passadas repetidas não duplicam.</p>
+      <p class="hint">Trocou de celular? Exporte tudo em CSV no aparelho antigo e importe aqui. Passadas repetidas não duplicam. O mesmo botão importa o arquivo de documentos.</p>
       <label class="btn sec block" for="imp-file">Importar CSV</label>
       <input type="file" id="imp-file" accept=".csv,text/csv" hidden>
     </div>
@@ -383,6 +425,7 @@ nav.tabs button{font-size:11px;padding:6px 0}
       <li><b>Resultados:</b> o melhor de cada prova na etapa, a comparação com o mês anterior e o que falta lançar na CBTC antes do prazo.</li>
       <li><b>Habitualidade:</b> competições e treinos por categoria nos últimos 12 meses, no ano ou na etapa.</li>
       <li><b>Mais → Exportar:</b> copie para a sua planilha ou ligue o envio automático para o Google Planilhas.</li>
+      <li><b>Mais → Meus documentos (opcional):</b> guarde CR, CRAF e guia de tráfego e receba aviso na tela Etapa antes dos prazos. Esses dados ficam só no aparelho.</li>
     </ol>
     <h3>Instalar no celular</h3>
     <div class="os">
@@ -410,6 +453,21 @@ nav.tabs button{font-size:11px;padding:6px 0}
     <div class="field" id="e-alma-wrap" hidden><label>Cano</label><div class="seg" id="e-alma"><button type="button" data-v="raiada" aria-pressed="true">Raiado</button><button type="button" data-v="lisa" aria-pressed="false">Liso</button></div></div>
     <div class="field"><label>Uso</label><div class="seg" id="e-uso"><button type="button" data-v="permitido" aria-pressed="true">Permitido</button><button type="button" data-v="restrito" aria-pressed="false">Restrito</button></div></div>
     <p class="catline" id="e-catline"></p>
+    <details class="docs" id="e-docs" hidden><summary>Documentos (opcional)</summary>
+      <div class="grid2">
+        <div class="field"><label for="ed-serie">Série</label><input id="ed-serie" autocomplete="off"></div>
+        <div class="field"><label for="ed-craf">Nº Sigma/CRAF</label><input id="ed-craf" autocomplete="off"></div>
+        <div class="field"><label for="ed-craf-exp">Expedição do CRAF</label><input type="date" id="ed-craf-exp"></div>
+        <div class="field"><label for="ed-craf-val">Validade impressa</label><input type="date" id="ed-craf-val"></div>
+      </div>
+      <div class="field"><label for="ed-renovar">Renovar até (prazo que vale)</label><input type="date" id="ed-renovar"><span class="hint">CRAF de CAC emitido antes de 21/07/2023: use a data da IN 330 pelo mês do seu nascimento. Tabela em Mais → Meus documentos → Prazos e regras.</span></div>
+      <div class="field"><label for="ed-gte">Nº da guia de tráfego</label><input id="ed-gte" autocomplete="off" inputmode="numeric"></div>
+      <div class="grid2">
+        <div class="field"><label for="ed-gte-de">Guia válida de</label><input type="date" id="ed-gte-de"></div>
+        <div class="field"><label for="ed-gte-ate">Guia válida até</label><input type="date" id="ed-gte-ate"></div>
+      </div>
+      <div class="field"><label for="ed-obs">Observação</label><input id="ed-obs" autocomplete="off"></div>
+    </details>
     <div class="row"><button class="btn" type="submit">Salvar arma</button><button class="btn sec" type="button" id="equip-cancelar">Cancelar</button></div>
   </form>
 </div>
@@ -424,7 +482,7 @@ nav.tabs button{font-size:11px;padding:6px 0}
 <script>
 (function(){
 "use strict";
-const APP_VERSAO = "2.0 · 30/10/2026";
+const APP_VERSAO = "2.1 · 01/11/2026";
 /* ---------- Provas (guia rápido oficial CBTC 19/10/2026, cards do app e vídeos) ---------- */
 const P = (id,fed,nome,alvo,disp,dist,tempo,saida,armas,rank,exec,mec)=>({id,fed,nome,alvo,disp,dist,tempo,saida,armas,rank,exec,mec:mec||null});
 const PROVAS = [
@@ -538,6 +596,104 @@ function salvarPassada(p){ p.atualizado=Date.now(); p.meta=p.atualizado; S.passa
 function salvarMeta(p){ p.meta=Date.now(); S.passadas[p.id]=p; saveLocal(); remoteWrite("p_"+p.id,p); }
 let estadoTimer=null;
 function salvarEstado(){ S.estado.atualizado=Date.now(); saveLocal(); clearTimeout(estadoTimer); estadoTimer=setTimeout(()=>remoteWrite("estado",S.estado),800); }
+/* ---------- Meus documentos (2.1): chave própria, só neste aparelho ----------
+   Nunca vai para S.estado: o estado é sincronizado com a conta Claude, e os documentos
+   não podem sair do aparelho a não ser pelo botão "Exportar documentos". */
+const DOCKEY="caderneta-cbtc.docs.v1";
+const D = { ativo:false, cr:{numero:"",validade:"",exp:"",obs:""}, armas:{} };
+function loadDocs(){ try{ const raw=localStorage.getItem(DOCKEY); if(raw){ const d=JSON.parse(raw); D.ativo=!!d.ativo; D.cr=Object.assign(D.cr,d.cr||{}); D.armas=d.armas||{}; } }catch(e){} }
+function saveDocs(){ try{ localStorage.setItem(DOCKEY,JSON.stringify(D)); }catch(e){} }
+const DOC_CAMPOS=["serie","craf","crafExp","crafVal","renovar","gte","gteDe","gteAte","obs"];
+const docsArma = id=>D.armas[id]||{};
+const isoValida = s=>/^\d{4}-\d{2}-\d{2}$/.test(s||"");
+function paraIso(s){ s=String(s||"").trim(); if(isoValida(s)) return s; const m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/); return m? `${m[3]}-${m[2].padStart(2,"0")}-${m[1].padStart(2,"0")}` : ""; }
+const diaUTC = iso=>Date.UTC(+iso.slice(0,4),+iso.slice(5,7)-1,+iso.slice(8,10));
+const diasAte = iso=>Math.round((diaUTC(iso)-diaUTC(hoje()))/86400000);
+function somaDias(iso,n){ const d=new Date(diaUTC(iso)+n*86400000); return d.toISOString().slice(0,10); }
+function prazosDocs(){
+  const out=[];
+  if(isoValida(D.cr.validade)) out.push({titulo:"CR: pedir revalidação", venc:"CR: prazo de revalidação passou", arma:"", data:somaDias(D.cr.validade,-30), extra:"vence "+dataBR(D.cr.validade)});
+  equipsAtivos().forEach(e=>{ const d=docsArma(e.id);
+    if(isoValida(d.renovar)) out.push({titulo:"CRAF: protocolar renovação", venc:"CRAF: prazo de renovação passou", arma:e.apelido, data:d.renovar});
+    else if(isoValida(d.crafVal)) out.push({titulo:"CRAF vence", venc:"CRAF vencido", arma:e.apelido, data:d.crafVal});
+    if(isoValida(d.gteAte)) out.push({titulo:"Guia de tráfego vence", venc:"Guia de tráfego vencida", arma:e.apelido, data:d.gteAte});
+  });
+  out.forEach(p=>{ p.dias=diasAte(p.data); if(p.dias<0) p.titulo=p.venc; });
+  return out.sort((a,b)=>a.data.localeCompare(b.data)||a.arma.localeCompare(b.arma));
+}
+function quandoTxt(dias){ return dias<0? `há ${-dias} dia${dias<-1?"s":""}` : dias===0? "hoje" : dias===1? "amanhã" : `em ${dias} dias`; }
+function renderAvisosDocs(){
+  const box=$("#avisos-docs");
+  if(!D.ativo){ box.innerHTML=""; return; }
+  box.innerHTML=prazosDocs().filter(p=>p.dias<=60).map(p=>`<div class="aviso${p.dias<0?" venc":""}"><span><b>${esc(p.titulo)}</b>${p.arma?" · "+esc(p.arma):""} · ${p.dias<0?"":"até "}${dataBR(p.data)}${p.extra?" ("+esc(p.extra)+")":""} · ${quandoTxt(p.dias)}</span><button data-goto-docs>Ver</button></div>`).join("");
+}
+function renderDocs(){
+  $("#docs-ativo").checked=D.ativo;
+  $("#docs-on").hidden=!D.ativo; $("#docs-off-txt").hidden=D.ativo;
+  $("#perfil-cr").hidden=!D.ativo; $("#perfil-cr-txt").hidden=!D.ativo;
+  $("#e-docs").hidden=!D.ativo;
+  $("#d-cr").value=D.cr.numero||""; $("#d-cr-val").value=D.cr.validade||"";
+  if(!D.ativo) return;
+  const ps=prazosDocs();
+  $("#docs-prazos").innerHTML = ps.length? ps.map(p=>`<div class="prazo"><div style="min-width:0"><div class="prova-nome">${esc(p.titulo)}</div><div class="meta">${p.arma?`<span>${esc(p.arma)}</span>`:""}${p.extra?`<span>${esc(p.extra)}</span>`:""}</div></div><div><div class="num">${dataBR(p.data)}</div><div class="quando ${p.dias<0?"venc":p.dias<=60?"perto":"muted"}">${quandoTxt(p.dias)}</div></div></div>`).join("")
+    : `<div class="empty"><p>Nenhum prazo informado. Preencha a validade do CR em Seus dados e os documentos de cada arma no cadastro dela, ou importe o arquivo de documentos.</p></div>`;
+}
+function docsFormPreencher(id){
+  const d=id?docsArma(id):{};
+  const m={serie:"#ed-serie",craf:"#ed-craf",crafExp:"#ed-craf-exp",crafVal:"#ed-craf-val",renovar:"#ed-renovar",gte:"#ed-gte",gteDe:"#ed-gte-de",gteAte:"#ed-gte-ate",obs:"#ed-obs"};
+  Object.entries(m).forEach(([k,s])=>$(s).value=d[k]||"");
+  $("#e-docs").open=false;
+}
+function docsFormLer(){
+  return {serie:$("#ed-serie").value.trim(),craf:$("#ed-craf").value.trim(),crafExp:$("#ed-craf-exp").value,crafVal:$("#ed-craf-val").value,renovar:$("#ed-renovar").value,
+    gte:$("#ed-gte").value.trim(),gteDe:$("#ed-gte-de").value,gteAte:$("#ed-gte-ate").value,obs:$("#ed-obs").value.trim()};
+}
+/* CSV de documentos: mesmo formato para importar e exportar */
+const DOC_COLS=["Registro","Nome curto","Modelo","Tipo","Mecanismo","Calibre","Cano","Uso","Série","Nº Sigma/CRAF","Expedição CRAF","Validade impressa","Renovar até","GTE nº","GTE válida de","GTE válida até","Observações"];
+const semAcento = s=>String(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().trim();
+function mecDe(txt,tipo){ const t=semAcento(txt); if(!t) return "outro"; const l=MECS[tipo]||MECS.curta; const f=l.find(([k,n])=>k===t||semAcento(n)===t||semAcento(n).startsWith(t)||t.startsWith(k)); return f?f[0]:"outro"; }
+function csvDocs(){
+  const q=v=>{ const s=String(v??""); return /[;"\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s; };
+  const rows=[DOC_COLS];
+  const cr=D.cr;
+  if(cr.numero||cr.validade) rows.push(["CR",S.estado.perfil.nome||"","","","","","","","",cr.numero||"",dataBR(cr.exp),dataBR(cr.validade),"","","","",cr.obs||""]);
+  equipsAtivos().forEach(e=>{ const d=docsArma(e.id);
+    rows.push(["Arma",e.apelido,e.modelo||"",e.tipo,e.mec||"",e.calibre||"",e.tipo==="longa"?(e.alma||"raiada"):"raiada",e.uso,d.serie||"",d.craf||"",dataBR(d.crafExp),dataBR(d.crafVal),dataBR(d.renovar),d.gte||"",dataBR(d.gteDe),dataBR(d.gteAte),d.obs||""]); });
+  return "﻿"+rows.map(r=>r.map(q).join(";")).join("\r\n");
+}
+function importarDocs(rows){
+  const h=rows[0].map(s=>s.trim()); const ix=n=>h.indexOf(n);
+  let armas=0, novas=0, cr=false;
+  rows.slice(1).forEach(r=>{
+    const g=k=>ix(k)<0?"":String(r[ix(k)]??"").trim();
+    const reg=semAcento(g("Registro"));
+    if(reg==="cr"){
+      D.cr.numero=g("Nº Sigma/CRAF")||D.cr.numero; D.cr.validade=paraIso(g("Validade impressa"))||D.cr.validade;
+      D.cr.exp=paraIso(g("Expedição CRAF"))||D.cr.exp; D.cr.obs=g("Observações")||D.cr.obs;
+      if(!S.estado.perfil.nome&&g("Nome curto")) S.estado.perfil.nome=g("Nome curto");
+      cr=true; return;
+    }
+    if(reg!=="arma") return;
+    const nome=g("Nome curto"); if(!nome) return;
+    const k=nome.toLowerCase();
+    let e=equipsAtivos().find(x=>x.apelido.toLowerCase()===k) || S.estado.equipamentos.find(x=>x.apelido.toLowerCase()===k);
+    if(e&&e.arquivado) e.arquivado=false;
+    if(!e){
+      const tipo=semAcento(g("Tipo"))==="longa"?"longa":"curta";
+      e={id:uid(),apelido:nome,modelo:g("Modelo"),tipo,mec:mecDe(g("Mecanismo"),tipo),calibre:g("Calibre"),
+        alma:tipo==="longa"&&/^lis/.test(semAcento(g("Cano")))?"lisa":"raiada",uso:/restrit/.test(semAcento(g("Uso")))?"restrito":"permitido"};
+      S.estado.equipamentos.push(e); novas++;
+    }
+    const d=Object.assign({},docsArma(e.id));
+    const val={serie:g("Série"),craf:g("Nº Sigma/CRAF"),crafExp:paraIso(g("Expedição CRAF")),crafVal:paraIso(g("Validade impressa")),renovar:paraIso(g("Renovar até")),
+      gte:g("GTE nº"),gteDe:paraIso(g("GTE válida de")),gteAte:paraIso(g("GTE válida até")),obs:g("Observações")};
+    DOC_CAMPOS.forEach(c=>{ if(val[c]) d[c]=val[c]; });
+    D.armas[e.id]=d; armas++;
+  });
+  if(!armas&&!cr){ toast("Nenhum documento reconhecido no arquivo."); return; }
+  D.ativo=true; saveDocs(); salvarEstado(); renderAll();
+  toast(`Documentos importados: ${cr?"CR e ":""}${armas} arma${armas===1?"":"s"}${novas?` (${novas} cadastrada${novas>1?"s":""} agora)`:""}`);
+}
 const todas = ()=>Object.values(S.passadas);
 const vivas = ()=>todas().filter(p=>!p.apagado);
 const provasVivas = ()=>vivas().filter(p=>p.tipo!=="treino");
@@ -620,6 +776,7 @@ function renderAvisos(){
     av.hidden=false;
   } else av.hidden=true;
   $("#aviso-equip").hidden = equipsAtivos().length>0;
+  renderAvisosDocs();
   const ios=/iphone|ipad|ipod/i.test(navigator.userAgent); const standalone=window.navigator.standalone===true||(window.matchMedia&&matchMedia("(display-mode: standalone)").matches);
   $("#aviso-ios").hidden = !(ios&&!standalone&&!dentroDoClaude());
 }
@@ -898,6 +1055,7 @@ function abrirEquip(id){
   $("#e-apelido").value=e?.apelido||""; $("#e-modelo").value=e?.modelo||""; $("#e-cal").value=e?.calibre||"";
   setSeg("e-tipo",e?.tipo||"curta"); setSeg("e-alma",e?.alma||"raiada"); setSeg("e-uso",e?.uso||"permitido");
   $("#e-mec").innerHTML=""; equipFormSync(); if(e?.mec) $("#e-mec").value=e.mec;
+  docsFormPreencher(e?.id);
   $("#equip-sheet").hidden=false; setTimeout(()=>$("#e-apelido").focus(),50);
 }
 function salvarEquip(ev){
@@ -905,11 +1063,13 @@ function salvarEquip(ev){
   const apelido=$("#e-apelido").value.trim(); if(!apelido){ toast("Dê um nome curto para a arma."); return; }
   const tipo=segVal("e-tipo");
   const dados={apelido,modelo:$("#e-modelo").value.trim(),tipo,mec:$("#e-mec").value,calibre:$("#e-cal").value.trim(),alma:tipo==="longa"?segVal("e-alma"):"raiada",uso:segVal("e-uso")};
+  let idSalvo=equipEditando;
   if(equipEditando){ const e=equipPorId(equipEditando); const catAntes=categoriaDe(e); Object.assign(e,dados);
     // passadas desta arma acompanham a categoria e o nome
     vivas().filter(p=>p.equipId===e.id).forEach(p=>{ if(p.categoria!==categoriaDe(e)||p.arma!==e.apelido||p.calibre!==e.calibre){ p.categoria=categoriaDe(e); p.arma=e.apelido; p.calibre=e.calibre; salvarPassada(p); } });
     if(catAntes!==categoriaDe(e)) toast("Categoria alterada também nas passadas desta arma");
-  } else S.estado.equipamentos.push(Object.assign({id:uid()},dados));
+  } else { idSalvo=uid(); S.estado.equipamentos.push(Object.assign({id:idSalvo},dados)); }
+  if(D.ativo){ const d=docsFormLer(); if(Object.values(d).some(Boolean)) D.armas[idSalvo]=d; else delete D.armas[idSalvo]; saveDocs(); }
   salvarEstado(); $("#equip-sheet").hidden=true; renderAll(); if(!equipEditando) toast("Arma cadastrada");
 }
 
@@ -1111,7 +1271,7 @@ function mostrar(v){
   window.scrollTo(0,0);
   try{ sessionStorage.setItem("cbtc.view",v); }catch(e){}
 }
-function renderAll(){ renderEtapa(); renderHist(); renderHabit(); renderMat(); renderEquip(); renderExp();
+function renderAll(){ renderEtapa(); renderHist(); renderHabit(); renderMat(); renderEquip(); renderExp(); renderDocs();
   $("#sub-perfil").textContent = S.estado.perfil.nome? S.estado.perfil.nome+(S.estado.perfil.clube?" · "+S.estado.perfil.clube:"") : "Provas e resultados";
   if(!editando&&$("#v-lancar").hidden){ const eq=$("#f-equip").value; renderSelectEquip(eq||equipsAtivos()[0]?.id||"_outra"); }
 }
@@ -1135,7 +1295,13 @@ function bind(){
     if(e.target.closest("[data-goto-mais]")){ mostrar("mais"); return; }
     if(e.target.closest("[data-goto-hist]")){ mostrar("hist"); return; }
     if(e.target.closest("[data-ajuda]")){ $("#ajuda").hidden=false; return; }
+    if(e.target.closest("[data-goto-docs]")){ mostrar("mais"); $("#box-docs").scrollIntoView({block:"start"}); return; }
   });
+  $("#docs-ativo").addEventListener("change",e=>{ D.ativo=e.target.checked; saveDocs(); renderDocs(); renderAvisosDocs(); toast(D.ativo?"Acompanhamento de documentos ligado":"Desligado. Os dados continuam guardados neste aparelho."); });
+  $("#d-cr").addEventListener("change",e=>{ D.cr.numero=e.target.value.trim(); saveDocs(); });
+  $("#d-cr-val").addEventListener("change",e=>{ D.cr.validade=e.target.value; saveDocs(); renderDocs(); renderAvisosDocs(); });
+  $("#docs-exp").addEventListener("click",async()=>{ const n=(S.estado.perfil.nome||"atirador").normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^\w]+/g,"-").replace(/^-|-$/g,"").toLowerCase();
+    const ok=await oferecerArquivo(`documentos-${n}-${hoje()}.csv`,new Blob([csvDocs()],{type:"text/csv"})); if(ok) toast("Arquivo de documentos pronto. Guarde em lugar seguro."); });
   $("#form").addEventListener("submit",onSubmit);
   $("#f-equip").addEventListener("change",()=>onEquipChange());
   $("#f-cats").addEventListener("click",e=>{ const b=e.target.closest("[data-fcat]"); if(!b) return; formCat=b.dataset.fcat; renderSelectEquip(null); });
@@ -1184,7 +1350,9 @@ function bind(){
   $("#gs-copiar").addEventListener("click",async()=>{ toast(await copiar(GS)?"Código copiado":"Selecione e copie o código à mão"); });
   $("#p-nome").addEventListener("change",e=>{ S.estado.perfil.nome=e.target.value.trim(); salvarEstado(); renderAll(); });
   $("#p-clube").addEventListener("change",e=>{ S.estado.perfil.clube=e.target.value.trim(); salvarEstado(); renderAll(); });
-  $("#imp-file").addEventListener("change",e=>{ const f=e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=()=>{ const n=importar(String(r.result)); toast(n?`${n} lançamento${n>1?"s":""} importado${n>1?"s":""}`:"Nenhum lançamento novo no arquivo."); e.target.value=""; }; r.readAsText(f,"utf-8"); });
+  $("#imp-file").addEventListener("change",e=>{ const f=e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=()=>{ const txt=String(r.result); const rows=parseCSV(txt); const h=(rows[0]||[]).map(s=>s.trim());
+      if(h.includes("Registro")&&h.includes("Série")){ importarDocs(rows); e.target.value=""; return; }
+      const n=importar(txt); toast(n?`${n} lançamento${n>1?"s":""} importado${n>1?"s":""}`:"Nenhum lançamento novo no arquivo."); e.target.value=""; }; r.readAsText(f,"utf-8"); });
   $("#btn-ajuda").addEventListener("click",()=>$("#ajuda").hidden=false);
   $("#ajuda-ok").addEventListener("click",()=>{ $("#ajuda").hidden=true; if(!S.estado.ajudaVista){ S.estado.ajudaVista=true; salvarEstado(); } });
   $("#btn-recarregar").addEventListener("click",()=>location.reload());
@@ -1193,6 +1361,7 @@ function bind(){
 
 /* ---------- Início ---------- */
 loadLocal();
+loadDocs();
 migrar();
 $("#versao-ajuda").textContent = $("#versao-mais").textContent = "Caderneta CBTC · versão "+APP_VERSAO;
 bind();

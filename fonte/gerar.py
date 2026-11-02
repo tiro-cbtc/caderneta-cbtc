@@ -59,7 +59,7 @@ manifest = {
 }
 json.dump(manifest, open(f"{out}/manifest.webmanifest", "w", encoding="utf-8"), ensure_ascii=False, indent=2)
 
-VERSION = "v7-2026-10-30"
+VERSION = "v8-2026-11-01"
 sw = f"""// Caderneta CBTC: funciona sem internet depois da primeira abertura.
 const CACHE = 'caderneta-{VERSION}';
 const ARQUIVOS = ['./', './index.html', './manifest.webmanifest', './vendor/xlsx.full.min.js',
